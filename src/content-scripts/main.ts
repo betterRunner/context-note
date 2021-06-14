@@ -3,8 +3,10 @@ import ElementPlus from 'element-plus'
 import Popup from './Popup.vue'
 import 'element-plus/lib/theme-chalk/index.css'
 
-import { demoHtml } from './parser/demo'
-import { getSelecetdTextRects, highlightRects } from './parser/text-rect'
+import { demoHtml } from './samples/dom'
+import { parseRectsAndTextFromSelection, SelectionMeta } from './parser/selection-meta'
+import { getFormattedTextFromTextList } from './parser/text-list'
+import { highlightRects } from './renderer/highlight'
 
 const MOUNT_EL_ID = 'attonex_clipper'
 
@@ -31,6 +33,8 @@ document.body.appendChild(demoPageDiv)
 
 document.addEventListener('mouseup', () => {
     console.log('mouse up')
-    const rects = getSelecetdTextRects()
-    highlightRects(rects);
+    const { rects, texts } = parseRectsAndTextFromSelection()
+    const text = getFormattedTextFromTextList(texts)
+    highlightRects(rects)
+    console.log('text', text)
 })

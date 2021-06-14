@@ -1,0 +1,22 @@
+{
+    "name": "vue-content-scripts",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "vite build --mode developmemnt",
+        "build": "vite build",
+        "serve": "vite preview"
+    },
+    "dependencies": {
+        "element-plus": "^1.0.2-beta.40",
+        "vue": "^3.0.5"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^1.2.1",
+        "@vue/compiler-sfc": "^3.0.5",
+        "rollup-plugin-probe": "0.0.3",
+        "typescript": "^4.1.3",
+        "vite": "^2.1.5",
+        "vite-plugin-chrome-extension": "^0.0.7",
+        "vue-tsc": "^0.0.24"
+    }
+}

@@ -1,21 +1,36 @@
-import { createApp } from "vue";
-import ElementPlus from "element-plus";
-import Popup from "./Popup.vue";
-import "element-plus/lib/theme-chalk/index.css";
+import { createApp } from 'vue'
+import ElementPlus from 'element-plus'
+import Popup from './Popup.vue'
+import 'element-plus/lib/theme-chalk/index.css'
 
-const MOUNT_EL_ID = "attonex_clipper";
+import { demoHtml } from './parser/demo'
+import { getSelecetdTextRects, highlightRects } from './parser/text-rect'
 
-let mountEl = document.getElementById(MOUNT_EL_ID);
+const MOUNT_EL_ID = 'attonex_clipper'
+
+let mountEl = document.getElementById(MOUNT_EL_ID)
 if (mountEl) {
-    mountEl.innerHTML = "";
+  mountEl.innerHTML = ''
 }
-mountEl = document.createElement("div");
-mountEl.setAttribute("id", MOUNT_EL_ID);
-document.body.appendChild(mountEl);
-const vm = createApp(Popup).use(ElementPlus).mount(mountEl);
+mountEl = document.createElement('div')
+mountEl.setAttribute('id', MOUNT_EL_ID)
+document.body.appendChild(mountEl)
+const vm = createApp(Popup)
+  .use(ElementPlus)
+  .mount(mountEl)
 
 chrome.runtime.onMessage.addListener((message) => {
-    if (message.toggleVisible) {
-        (vm as any).visible = !(vm as any).visible;
-    }
-});
+  if (message.toggleVisible) {
+    ;(vm as any).visible = !(vm as any).visible
+  }
+})
+
+const demoPageDiv = document.createElement('div')
+demoPageDiv.innerHTML = demoHtml;
+document.body.appendChild(demoPageDiv)
+
+document.addEventListener('mouseup', () => {
+    console.log('mouse up')
+    const rects = getSelecetdTextRects()
+    highlightRects(rects);
+})

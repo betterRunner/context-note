@@ -1,17 +1,13 @@
 
 
 <p align="center">
-  <img width="300px" src="">
-</p>
-
-<p align="center">
   <a href="https://www.npmjs.org/package/element-plus">
     <img width="300" src="https://user-images.githubusercontent.com/7123136/132152458-37a8ec1d-dfb2-4957-8451-44cf01312820.png">
   </a>
   <br>
 </p>
 
-<p align="center">A note-taking chrome extension: take notes on web with their context.
+<p align="center">A note-taking chrome extension: taking notes on web with their context.
 </p>
 
 ## Features

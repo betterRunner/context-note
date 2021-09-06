@@ -13,8 +13,8 @@ function setHighlightStyle(ele: HTMLElement, rect: Rect) {
   ele.style.top = rect.y - PADDING / 2 + "px";
   ele.style.width = `${rect.width + PADDING}px`;
   ele.style.height = `${rect.height + PADDING}px`;
-  ele.style.background = "yellow";
-  ele.style.opacity = "0.3";
+  ele.style.background = "rgb(222, 250, 211)";
+  ele.style.opacity = "0.5";
   ele.style.content = " ";
 }
 

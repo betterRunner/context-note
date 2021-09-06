@@ -1,0 +1,355 @@
+<template>
+  <div
+    class="note-wrapper"
+    :class="{ 'note-wrapper__notselected': notSelected }"
+    :style="colorBarStyle"
+  >
+    <!-- website link -->
+    <el-tooltip placement="left">
+      <div :id="`link-${note.id}`" class="note-link">{{ note.link }}</div>
+      <template #content>
+        {{ note.link }}
+        <div class="note-link-opers">
+          <span
+            class="note-link-oper"
+            v-clipboard:copy="note.link"
+            v-clipboard:success="handleCopy"
+            >Copy</span
+          >
+          <span class="note-link-oper" @click="handleOpenLink(note.link)">Open</span>
+        </div>
+      </template>
+    </el-tooltip>
+    <!-- opers area -->
+    <div class="note-opers">
+      <!-- delete icon -->
+      <el-popconfirm
+        confirmButtonText="yes"
+        cancelButtonText="no"
+        icon="el-icon-info"
+        iconColor="red"
+        title="delete this note?"
+        size="small"
+        @confirm="handleDeleteNote"
+      >
+        <template #reference>
+          <el-icon class="note-delete-icon" :size="12">
+            <Delete></Delete>
+          </el-icon>
+        </template>
+      </el-popconfirm>
+      <!-- tag=list -->
+      <div :id="`note-item-${note.id || ''}`" class="note-tag-wrapper">
+        <div
+          v-if="tags.length === 0"
+          class="note-tag-adder"
+          @click="handleOpenTagBook(note?.id)"
+        >
+          #Add tag..
+        </div>
+        <div
+          v-else
+          v-for="tag in tags || []"
+          :key="tag.id"
+          class="note-tag-item"
+          :style="getNoteTagItemStyle(tag)"
+          @click="handleOpenTagBook(note.id)"
+        >
+          {{ `#${tag.name}` }}
+        </div>
+      </div>
+      <!-- time -->
+      <div class="note-time">{{ dayjs.unix(note.createTime).format("MM/DD HH:mm") }}</div>
+    </div>
+    <!-- note content -->
+    <p class="note-content">{{ note.content }}</p>
+    <!-- note editor -->
+
+    <div
+      v-clickoutside="handleClickOutsideEditor"
+      :class="[
+        'note-editor',
+        enableEditor ? 'note-editor__edit' : 'note-editor__readonly',
+      ]"
+    >
+      <QuillEditor
+        ref="editorDom"
+        v-model:content="editorContent"
+        :toolbar="editorToolbar"
+        @click="handleClickEditor"
+      ></QuillEditor>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { inject, ref, computed, watch, nextTick, PropType } from "vue";
+import randomcolor from "randomcolor";
+import dayjs from "dayjs";
+import { Delete } from "@element-plus/icons";
+import { ElMessage } from "element-plus";
+
+import { QuillEditor, Delta } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+
+import { Note } from "@/types/note";
+import { Tag } from "@/types/tag";
+import { Storage } from "@/types/storage";
+import { Coor } from "@/types/common";
+import mitt from "@/utils/mitt";
+import TagBook from "../tag-book/index.vue";
+
+export default {
+  components: {
+    TagBook,
+    Delete,
+    QuillEditor,
+  },
+  props: {
+    curNoteId: {
+      type: Object as PropType<string>,
+      default: "",
+    },
+    note: {
+      required: true,
+      type: Object as PropType<Note>,
+    },
+  },
+  setup(props, ctx) {
+    const colorBarStyle = ref({
+      borderTop: `8px solid ${randomcolor({
+        alpha: 0.5,
+      })}`,
+    });
+    const storage: Storage = inject("storage", {
+      notes: [],
+      tags: [],
+    });
+
+    /// note link
+    const noteLink = ref(props.note.link || "");
+    const handleCopy = () => {
+      ElMessage.success("Copied");
+    };
+    const handleOpenLink = (link: string) => {
+      window.open(link);
+    };
+
+    /// is note selected or not
+    const notSelected = computed(
+      () => props.curNoteId && props.curNoteId !== props.note.id
+    );
+
+    /// close note
+    const handleDeleteNote = () => {
+      ctx.emit("delete");
+    };
+
+    /// note tags
+    const getNoteTagItemStyle = (tag: Tag) => {
+      return {
+        color: tag.color,
+      };
+    };
+    const tags = computed(() =>
+      storage.tags.filter((tag) => props.note.tags.includes(tag.name))
+    );
+    // open tag book
+    const handleOpenTagBook = (noteId: string) => {
+      if (noteId) {
+        const noteDom = document.querySelector(`#note-item-${noteId}`);
+        const rect = noteDom?.getBoundingClientRect();
+        if (rect) {
+          mitt.emit("open-tag-book", {
+            noteId,
+            coor: {
+              x: rect.left,
+              y: rect.top,
+            } as Coor,
+          });
+        }
+      }
+    };
+
+    /// note editor
+    const enableEditor = ref(true);
+    // bug: need `nextTick` to work
+    nextTick(() => {
+      enableEditor.value = false;
+    });
+    const editorToolbar = [
+      [{ header: [1, 2, 3, 4, false] }, { font: [] }],
+      ["bold", "italic", "underline", "strike", { color: [] }, { background: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image", "blockquote", "code-block"],
+      ["clean"],
+    ];
+    const editorContent = ref<Delta | string>(props.note.note);
+    const editorDom = ref(null);
+    mitt.on("focus-editor", (id) => {
+      if (id === props.note.id) {
+        enableEditor.value = true;
+        setTimeout(() => {
+          const e = (editorDom.value as any)?.editor?.children[0];
+          if (e) {
+            // TODO: cursor to the end
+            e.focus();
+          }
+        });
+      }
+      // ensure `handleClickOutsideEditor` trigger first
+      nextTick(() => ctx.emit("focus", id));
+    });
+
+    const handleClickEditor = () => {
+      enableEditor.value = true;
+      nextTick(() => ctx.emit("select", props.note.id));
+    };
+    const handleClickOutsideEditor = () => {
+      enableEditor.value = false;
+      // save the note
+      if (!notSelected) {
+        // quill would turn `ops` from array to indexes object, turn it back to array
+        const content = !editorContent.value
+          ? ""
+          : {
+              ops: Object.values(editorContent.value?.ops || {}),
+            };
+        ctx.emit("update-note-note", {
+          id: props.note.id,
+          content: content,
+        });
+      }
+      ctx.emit("select", "");
+    };
+
+    return {
+      dayjs,
+      colorBarStyle,
+      notSelected,
+
+      noteLink,
+      handleCopy,
+      handleOpenLink,
+
+      handleDeleteNote,
+
+      getNoteTagItemStyle,
+      tags,
+      handleOpenTagBook,
+
+      enableEditor,
+      editorToolbar,
+      editorContent,
+      editorDom,
+      handleClickEditor,
+      handleClickOutsideEditor,
+    };
+  },
+};
+</script>
+
+<style lang="less" scoped>
+.note-wrapper {
+  padding: 16px;
+  background: white;
+  box-shadow: 1px 2px 2px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 38px;
+  border-radius: 6px 6px 8px 8px;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .note-delete-icon {
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .note-link {
+    font-size: 12px;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 400px;
+    color: #409eff;
+    cursor: pointer;
+  }
+
+  .note-opers {
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+
+    .note-tag-wrapper {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 300px;
+      position: relative;
+
+      .note-tag-adder {
+        cursor: pointer;
+        user-select: none;
+      }
+      .note-tag-item {
+        margin: 2px 10px 2px 0;
+        cursor: pointer;
+      }
+    }
+    .note-time {
+      text-align: right;
+      user-select: none;
+    }
+  }
+
+  .note-content {
+    margin: 10px 0;
+    font-size: 14px;
+    font-weight: 400;
+    white-space: pre-wrap;
+  }
+
+  .note-editor {
+    background-color: #eee;
+  }
+  .note-editor__readonly {
+    > :first-child {
+      display: none;
+    }
+    > :nth-child(2) {
+      border-top: solid 1px #d1d5db;
+      border-radius: 5px;
+    }
+  }
+  .note-editor__edit {
+    > :first-child {
+      display: flex;
+    }
+    > :nth-child(2) {
+      border-top: none;
+    }
+  }
+}
+.note-wrapper__notselected {
+  opacity: 0.5;
+}
+.note-link-opers {
+  padding: 5px 0px;
+  cursor: pointer;
+}
+.note-link-oper {
+  margin-right: 10px;
+  color: #0077cc;
+  &:hover {
+    color: #0095ff;
+  }
+}
+</style>

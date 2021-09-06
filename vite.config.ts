@@ -13,8 +13,8 @@ export default defineConfig({
     },
     build: {
         rollupOptions: {
-            input: "src/manifest.json"
-        }
+            input: "src/manifest.json",
+        },
     },
     plugins: [
         vue(),

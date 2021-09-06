@@ -1,3 +1,23 @@
-body {
-    background-color: tomato;
+body {}
+
+/* Rewrite el-popper z-index, should be higher than extension mask z-index */
+.el-popper {
+  z-index: 10001 !important;
+}
+
+/* Since extension is overflow scroll, setting dynamic left of quill tooltip
+will be invisible, so set left to 0. */
+.ql-tooltip {
+  left: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  background: #aaa;
 }

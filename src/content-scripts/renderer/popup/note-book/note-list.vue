@@ -1,5 +1,5 @@
 <template>
-  <div class="note-list-wrapper">
+  <div v-if="notes.length" class="note-list-wrapper">
     <Note
       v-for="(note, i) in notes"
       :ref="
@@ -16,6 +16,10 @@
       @focus="(noteId) => handleSelectNote(noteId, false)"
       @select="(noteId) => handleSelectNote(noteId, true)"
     ></Note>
+  </div>
+  <div class="note-list-empty" v-else>
+    <h2 class="note-list-empty-title">Your notebook is empty.</h2>
+    <p class="note-list-empty-content">Take your first note by selecting any text on the webpage and then click the popup icon!</p>
   </div>
 </template>
 
@@ -179,8 +183,25 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+}
+.note-list-empty {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  color: #fff;
+
+  .note-list-empty-title {
+    font-weight: bold;
+  }
+  .note-list-empty-content {
+    font-size: 16px;
+    font-weight: 600;
+  }
 }
 </style>

@@ -127,12 +127,27 @@ export default defineComponent({
     const handleDeleteNote = async (note: TNote) => {
       const { id } = note;
       // delete id from  `noteIds` of all tags
-      storage.tags.forEach((tag) => {
+      for (let m = 0; m < storage.tags.length; m++) {
+        let tag = storage.tags[m];
         const index = tag.noteIds.findIndex((nid) => nid === id);
         if (index !== -1) {
-          tag.noteIds.splice(index, 1);
+          storage.tags = await delItemFromArrProperty(
+            StorageKeys.tags,
+            "id",
+            tag.id,
+            "noteIds",
+            id,
+            ""
+          );
+          // update the tag item
+          tag = storage.tags[m];
+          if (tag.noteIds.length === 0) {
+            console.log("delete");
+            // if the tag `noteIds` is empty, delete the tag also
+            storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
+          }
         }
-      });
+      }
       // delete note from `notes`
       storage.notes = await delItemFromArr(StorageKeys.notes, id, "id");
       // delete highlight rects dom

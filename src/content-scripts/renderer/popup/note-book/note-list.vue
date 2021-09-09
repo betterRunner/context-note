@@ -194,14 +194,15 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   height: 100%;
-  color: #fff;
 
   .note-list-empty-title {
     font-weight: bold;
+    color: #fff;
   }
   .note-list-empty-content {
     font-size: 16px;
     font-weight: 600;
+    color: #fff;
   }
 }
 </style>

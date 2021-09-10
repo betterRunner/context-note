@@ -208,7 +208,7 @@ export default {
     const handleClickOutsideEditor = () => {
       enableEditor.value = false;
       // save the note
-      if (!notSelected) {
+      if (!notSelected.value) {
         // quill would turn `ops` from array to indexes object, turn it back to array
         const content = !editorContent.value
           ? ""

@@ -38,6 +38,7 @@ import {
   delItemFromArr,
 } from "@/utils/storage";
 import { StorageKeys } from "@/utils/constant";
+import { filterBySearchText } from "@/utils/search-filter";
 import { removeUrlPostfix } from "@/utils/utils";
 import Note from "./note.vue";
 
@@ -146,7 +147,6 @@ export default defineComponent({
           // update the tag item
           tag = storage.tags[m];
           if (tag.noteIds.length === 0) {
-            console.log("delete");
             // if the tag `noteIds` is empty, delete the tag also
             storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
           }

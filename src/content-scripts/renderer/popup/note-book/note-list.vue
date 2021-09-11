@@ -1,5 +1,5 @@
 <template>
-  <div class="note-list-wrapper">
+  <div v-if="notes.length" class="note-list-wrapper">
     <Note
       v-for="(note, i) in notes"
       :ref="
@@ -16,6 +16,10 @@
       @focus="(noteId) => handleSelectNote(noteId, false)"
       @select="(noteId) => handleSelectNote(noteId, true)"
     ></Note>
+  </div>
+  <div class="note-list-empty" v-else>
+    <h2 class="note-list-empty-title">Your notebook is empty.</h2>
+    <p class="note-list-empty-content">Take your first note by selecting any text on the webpage and then click the popup icon!</p>
   </div>
 </template>
 
@@ -127,12 +131,27 @@ export default defineComponent({
     const handleDeleteNote = async (note: TNote) => {
       const { id } = note;
       // delete id from  `noteIds` of all tags
-      storage.tags.forEach((tag) => {
+      for (let m = 0; m < storage.tags.length; m++) {
+        let tag = storage.tags[m];
         const index = tag.noteIds.findIndex((nid) => nid === id);
         if (index !== -1) {
-          tag.noteIds.splice(index, 1);
+          storage.tags = await delItemFromArrProperty(
+            StorageKeys.tags,
+            "id",
+            tag.id,
+            "noteIds",
+            id,
+            ""
+          );
+          // update the tag item
+          tag = storage.tags[m];
+          if (tag.noteIds.length === 0) {
+            console.log("delete");
+            // if the tag `noteIds` is empty, delete the tag also
+            storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
+          }
         }
-      });
+      }
       // delete note from `notes`
       storage.notes = await delItemFromArr(StorageKeys.notes, id, "id");
       // delete highlight rects dom
@@ -164,8 +183,26 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+}
+.note-list-empty {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+
+  .note-list-empty-title {
+    font-weight: bold;
+    color: #fff;
+  }
+  .note-list-empty-content {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
 }
 </style>

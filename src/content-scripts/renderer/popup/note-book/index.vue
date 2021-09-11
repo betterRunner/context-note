@@ -56,7 +56,7 @@ export default {
   min-width: 500px;
   height: 100vh;
   overflow-y: scroll;
-  background-color: #646cff80;
+  background-color: rgba(100, 108, 255, 0.8);
   opacity: 1;
   border-radius: 10px;
   z-index: 9999;

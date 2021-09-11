@@ -1,7 +1,14 @@
 <template>
   <div v-if="notes.length" class="note-list-wrapper">
+    <el-input
+      v-model="searchText"
+      @onChange="handle"
+      placeholder="search your notes.."
+      class="note-list-search"
+      size="mini"
+    ></el-input>
     <Note
-      v-for="(note, i) in notes"
+      v-for="(note, i) in searchedNotes"
       :ref="
         (el) => {
           noteDivs[i] = el;
@@ -19,13 +26,17 @@
   </div>
   <div class="note-list-empty" v-else>
     <h2 class="note-list-empty-title">Your notebook is empty.</h2>
-    <p class="note-list-empty-content">Take your first note by selecting any text on the webpage and then click the popup icon!</p>
+    <p class="note-list-empty-content">
+      Take your first note by selecting any text on the webpage and then click the popup
+      icon!
+    </p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onBeforeUpdate, inject, ref, computed } from "vue";
 import dayjs from "dayjs";
+import { Delta } from "@vueup/vue-quill";
 import { Rect } from "@/types/common";
 import { Note as TNote } from "@/types/note";
 import { Storage } from "@/types/storage";
@@ -54,6 +65,42 @@ export default defineComponent({
       tags: [],
     });
     const notes = computed<TNote[]>(() => storage.notes);
+
+    /// search note
+    const searchText = ref("");
+    const searchedNotes = computed(() => {
+      const notes = storage.notes;
+
+      if (!searchText.value) return notes;
+
+      const plainNotes = notes.map((n) => ({
+        id: n.id,
+        plainText: (n.note as Delta)?.ops
+          ?.map((o: { insert: any }) => o?.insert || "")
+          .join(""),
+      }));
+      const filteredPlainNoteIds = filterBySearchText(
+        plainNotes,
+        "plainText",
+        searchText.value
+      ).map((n) => n.id);
+      // fitler by `searchText` in the following order
+      let ids = [
+        // 1. filter by content
+        ...filterBySearchText(notes, "content", searchText.value).map((n) => n.id),
+        // 2. filter by plain note
+        ...filteredPlainNoteIds,
+        // 3. filter by tags
+        ...notes
+          .filter((n) => !!filterBySearchText(n.tags, "", searchText.value).length)
+          .map((n) => n.id),
+        // 4. filter by link
+        ...notes.filter((n) => n.link.includes(searchText.value)).map((n) => n.id),
+      ];
+      // remove the duplicated ids
+      ids = Array.from(new Set(ids));
+      return ids.map((id) => notes.find((n) => n.id === id)).filter((n) => !!n);
+    });
 
     /// create note
     const noteDivs = ref([]);
@@ -172,6 +219,9 @@ export default defineComponent({
       notes,
       noteDivs,
 
+      searchText,
+      searchedNotes,
+
       handleUpdateNoteNote,
 
       handleDeleteNote,
@@ -186,6 +236,10 @@ export default defineComponent({
 <style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+}
+.note-list-search {
+  margin-bottom: 10px;
+  background: #fff !important;
 }
 .note-list-empty {
   padding: 20px;

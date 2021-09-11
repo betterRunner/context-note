@@ -1,7 +1,12 @@
 import pinyin, { STYLE_NORMAL } from "pinyin";
 import isChinese from "is-chinese";
 
-export function filterBySearchText(arr: any[], key = "", text = "") {
+export function filterBySearchText(
+  arr: any[],
+  key = "",
+  text = "",
+  ignoreCase = true
+) {
   const _getChPart = (text = "") => {
     return text.replace(/[A-Za-z]/g, "");
   };
@@ -12,7 +17,7 @@ export function filterBySearchText(arr: any[], key = "", text = "") {
     // searchText contains Chinese text
     return arr.filter((e) => {
       const item = key ? e[key] : e;
-      return item.includes(chPart);
+      return item?.includes(chPart);
     });
   } else {
     return arr.filter((e) => {
@@ -21,10 +26,10 @@ export function filterBySearchText(arr: any[], key = "", text = "") {
       const parts = pinyin(item, {
         style: STYLE_NORMAL,
       });
-      return parts
-        .map((part) => (part.length ? part[0] : ""))
-        .join("")
-        .includes(text);
+      let itemStr = parts.map((part) => (part.length ? part[0] : "")).join("");
+      itemStr = !ignoreCase ? itemStr : itemStr.toLowerCase();
+      text = !ignoreCase ? text : text.toLowerCase();
+      return itemStr.includes(text);
     });
   }
 }

@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUpdate, inject, ref, computed } from "vue";
+import { defineComponent, onBeforeUpdate, inject, ref, computed, nextTick } from "vue";
 import dayjs from "dayjs";
 import { Delta } from "@vueup/vue-quill";
 
@@ -140,11 +140,14 @@ export default defineComponent({
           $el: HTMLElement;
         })?.$el;
         if (divNote) {
-          divNote.scrollIntoView();
+          divNote.scrollIntoView({ block: 'center' });
         }
 
         // 3. focus the content editor of this note
-        mitt.emit("focus-editor", note.id);
+        // make sure above `scrollIntoView` is finished
+        setTimeout(() => {
+          mitt.emit("focus-editor", note.id);
+        })
       });
 
       // 4. send back the cb event

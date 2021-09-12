@@ -183,25 +183,21 @@ export default defineComponent({
     /// delete note
     const handleDeleteNote = async (note: TNote) => {
       const { id } = note;
+      const tags = storage.tags.filter(t => t.noteIds.includes(id));
+      
       // delete id from  `noteIds` of all tags
-      for (let m = 0; m < storage.tags.length; m++) {
-        let tag = storage.tags[m];
-        const index = tag.noteIds.findIndex((nid) => nid === id);
-        if (index !== -1) {
-          storage.tags = await delItemFromArrProperty(
-            StorageKeys.tags,
-            "id",
-            tag.id,
-            "noteIds",
-            id,
-            ""
-          );
-          // update the tag item
-          tag = storage.tags[m];
-          if (tag.noteIds.length === 0) {
-            // if the tag `noteIds` is empty, delete the tag also
-            storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
-          }
+      for (const tag of tags) {
+        storage.tags = await delItemFromArrProperty(
+          StorageKeys.tags,
+          "id",
+          tag.id,
+          "noteIds",
+          id,
+          ""
+        );
+        if (tag.noteIds.length < 2) {
+          // if the tag `noteIds` is empty, delete the tag also
+          storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
         }
       }
       // delete note from `notes`

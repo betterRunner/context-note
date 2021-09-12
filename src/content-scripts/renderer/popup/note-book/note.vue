@@ -293,6 +293,7 @@ export default {
       flex-wrap: wrap;
       width: 300px;
       position: relative;
+      font-size: 14px;
 
       .note-tag-adder {
         cursor: pointer;

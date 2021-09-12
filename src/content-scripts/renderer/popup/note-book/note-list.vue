@@ -5,6 +5,7 @@
       @onChange="handle"
       placeholder="search your notes.."
       class="note-list-search"
+      size="mini"
     >
       <template #prefix>
         <i class="el-input__icon el-icon-search"></i>

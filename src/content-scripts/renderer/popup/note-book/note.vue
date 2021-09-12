@@ -6,21 +6,7 @@
     @click="handleClickNote"
   >
     <!-- website link -->
-    <el-tooltip placement="left">
-      <div :id="`link-${note.id}`" class="note-link">{{ note.link }}</div>
-      <template #content>
-        {{ note.link }}
-        <div class="note-link-opers">
-          <span
-            class="note-link-oper"
-            v-clipboard:copy="note.link"
-            v-clipboard:success="handleCopy"
-            >Copy</span
-          >
-          <span class="note-link-oper" @click="handleOpenLink(note.link)">Open</span>
-        </div>
-      </template>
-    </el-tooltip>
+    <div :id="`link-${note.id}`" class="note-link"><span @click="handleOpenLink(note)" class="note-link-content">{{ note.link }}</span></div>
     <!-- opers area -->
     <div class="note-opers">
       <!-- delete icon -->
@@ -97,8 +83,10 @@ import { Note } from "@/types/note";
 import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
 import { Coor } from "@/types/common";
+import { Query } from "@/types/dom";
 import mitt from "@/utils/mitt";
 import TagBook from "../tag-book/index.vue";
+import { wrapUrlWithQuery } from '@/utils/utils';
 
 export default {
   components: {
@@ -132,8 +120,12 @@ export default {
     const handleCopy = () => {
       ElMessage.success("Copied");
     };
-    const handleOpenLink = (link: string) => {
-      window.open(link);
+    const handleOpenLink = (note: Note) => {
+      const query: Query = {
+        noteId: note.id
+      }
+      const url = wrapUrlWithQuery(note.link, query)
+      window.open(url);
     };
 
     /// is note selected or not
@@ -282,6 +274,8 @@ export default {
     overflow: hidden;
     width: 400px;
     color: #409eff;
+  }
+  .note-link-content {
     cursor: pointer;
   }
 

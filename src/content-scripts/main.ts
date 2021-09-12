@@ -5,10 +5,11 @@ import "element-plus/theme-chalk/index.css";
 import { ClickOutside } from "@element-plus/directives";
 
 import { Note } from "@/types/note";
+import { Query } from "@/types/dom";
 import { get } from "@/utils/storage";
 import mitt, { sendEmitAndWait } from "@/utils/mitt";
 import { StorageKeys } from "@/utils/constant";
-import { removeUrlPostfix } from "@/utils/utils";
+import { getUrlQuery, removeUrlPostfix } from "@/utils/utils";
 import Popup from "./renderer/popup/index.vue";
 import { parseRectsAndTextFromSelection } from "./parser/selection-meta";
 import { getFormattedTextFromTextList } from "./parser/text-list";
@@ -94,8 +95,16 @@ async function renderNoteHighlightRects() {
   });
 }
 
-delHighlightRects();
-renderNoteHighlightRects();
+async function initializeExtension() {
+  const { noteId = '' } = getUrlQuery(window.location.href) as Query;
+  delHighlightRects();
+  await renderNoteHighlightRects();
+  if (noteId) {
+    await sendEmitAndWait("select-note", noteId);
+    (vm as any).visible = true;
+  }
+}
+initializeExtension();
 
 // listen url change to redraw rects
 // !NOTE: need `setTimeout` to work correctly
@@ -110,8 +119,6 @@ setTimeout(() => {
   }).observe(document, { subtree: true, childList: true });
 
   function onUrlChange() {
-    console.log('url update');
-    delHighlightRects();
-    renderNoteHighlightRects();
+    initializeExtension();
   }
 });

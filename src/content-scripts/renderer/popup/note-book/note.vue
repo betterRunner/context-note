@@ -3,6 +3,7 @@
     class="note-wrapper"
     :class="{ 'note-wrapper__notselected': notSelected }"
     :style="colorBarStyle"
+    @click="handleClickNote"
   >
     <!-- website link -->
     <el-tooltip placement="left">
@@ -201,9 +202,12 @@ export default {
       nextTick(() => ctx.emit("focus", id));
     });
 
+    const handleClickNote = () => {
+      // make sure the select event is trigger after `handleClickOutsideEditor`
+      nextTick(() => ctx.emit("select", props.note.id));
+    }
     const handleClickEditor = () => {
       enableEditor.value = true;
-      nextTick(() => ctx.emit("select", props.note.id));
     };
     const handleClickOutsideEditor = () => {
       enableEditor.value = false;
@@ -242,6 +246,7 @@ export default {
       editorToolbar,
       editorContent,
       editorDom,
+      handleClickNote,
       handleClickEditor,
       handleClickOutsideEditor,
     };

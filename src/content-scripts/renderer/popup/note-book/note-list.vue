@@ -5,8 +5,11 @@
       @onChange="handle"
       placeholder="search your notes.."
       class="note-list-search"
-      size="mini"
-    ></el-input>
+    >
+      <template #prefix>
+        <i class="el-input__icon el-icon-search"></i>
+      </template>
+    </el-input>
     <Note
       v-for="(note, i) in searchedNotes"
       :ref="
@@ -37,6 +40,7 @@
 import { defineComponent, onBeforeUpdate, inject, ref, computed } from "vue";
 import dayjs from "dayjs";
 import { Delta } from "@vueup/vue-quill";
+
 import { Rect } from "@/types/common";
 import { Note as TNote } from "@/types/note";
 import { Storage } from "@/types/storage";
@@ -209,7 +213,7 @@ export default defineComponent({
     const curNoteId = ref("");
     const handleSelectNote = (id: string, scrollIntoView: boolean) => {
       curNoteId.value = id;
-      mitt.emit("bold-note", {
+      id && mitt.emit("bold-note", {
         id,
         scrollIntoView,
       });

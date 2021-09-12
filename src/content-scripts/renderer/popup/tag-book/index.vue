@@ -3,7 +3,7 @@
     <TagSearcher
       :tags="tagsWithSelect"
       @onSearch="handleSearchTags"
-      @onEnter="handleCreateTag"
+      @onEnter="handleEnterSearch"
     ></TagSearcher>
     <TagSelector
       :tags="tagsWithSelect"
@@ -23,7 +23,12 @@ import { Coor } from "@/types/common";
 import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
 import mitt from "@/utils/mitt";
-import { addItemToArr, addItemToArrProperty, delItemFromArr, delItemFromArrProperty } from "@/utils/storage";
+import {
+  addItemToArr,
+  addItemToArrProperty,
+  delItemFromArr,
+  delItemFromArrProperty,
+} from "@/utils/storage";
 import { StorageKeys } from "@/utils/constant";
 import TagSelector from "./tag-selector/index.vue";
 import TagSearcher from "./tag-searcher.vue";
@@ -85,7 +90,7 @@ export default {
 
     const storage: Storage = inject("storage", {
       notes: [],
-      tags: []
+      tags: [],
     });
     /// mark tags with this noteId to `isSelect`
     const tagsWithSelect = computed(() => {
@@ -93,7 +98,7 @@ export default {
         ...tag,
         isSelect: tag.noteIds.includes(props.noteId),
       }));
-    })
+    });
 
     /// search tag
     const searchText = ref("");
@@ -101,6 +106,16 @@ export default {
     const handleSearchTags = ({ text = "", result = [] }) => {
       searchText.value = text;
       searchTags.value = result;
+    };
+    const handleEnterSearch = (tagName: string) => {
+      // when pressing enter, if there is a tag in `searchTags` whose tagName is the same as the search text and is not selected,
+      // select it instead of create a new one.
+      const sameTag = searchTags.value.find(st => st.name === tagName);
+      if (sameTag) {
+        sameTag.isSelect || handleSelectTagItem(sameTag);
+      } else {
+        handleCreateTag(tagName);
+      }
     };
 
     /// create tag
@@ -134,16 +149,28 @@ export default {
             tag: tag.name,
             isAddOrDelete: true,
           });
-          storage.tags = await addItemToArrProperty(StorageKeys.tags, "id", tag.id, "noteIds", props.noteId);
+          storage.tags = await addItemToArrProperty(
+            StorageKeys.tags,
+            "id",
+            tag.id,
+            "noteIds",
+            props.noteId
+          );
         } else {
           mitt.emit("update-note-tag", {
             noteId: props.noteId,
             tag: tag.name,
             isAddOrDelete: false,
           });
-          storage.tags = await delItemFromArrProperty(StorageKeys.tags, "id", tag.id, "noteIds", props.noteId);
+          storage.tags = await delItemFromArrProperty(
+            StorageKeys.tags,
+            "id",
+            tag.id,
+            "noteIds",
+            props.noteId
+          );
           // if tag's noteIds is empty, delete this tag
-          const newTag = storage.tags.find(t => t.id === tag?.id);
+          const newTag = storage.tags.find((t) => t.id === tag?.id);
           if (newTag?.noteIds.length === 0) {
             storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
           }
@@ -159,6 +186,7 @@ export default {
       searchText,
       searchTags,
       handleSearchTags,
+      handleEnterSearch,
 
       handleCreateTag,
 

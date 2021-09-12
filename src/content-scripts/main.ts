@@ -23,7 +23,7 @@ import {
   genLogoIconAndRegisterClickCb,
 } from "./renderer/dom/logo-icon";
 
-// 1. create vue instance and bind to extension
+// create vue instance and bind to extension
 const MOUNT_EL_ID = "attonex_clipper";
 let mountEl = document.getElementById(MOUNT_EL_ID);
 if (mountEl) {
@@ -38,14 +38,14 @@ const vm = createApp(Popup)
   .directive("clickoutside", ClickOutside)
   .mount(mountEl);
 
-// 2. listen `click` event of extension logo to trigger popup's visibility
+// listen `click` event of extension logo to trigger popup's visibility
 chrome.runtime.onMessage.addListener((message: any) => {
   if (message.toggleVisible) {
     (vm as any).visible = !(vm as any).visible;
   }
 });
 
-// 3. listen `mouseup` event to judge if any text is selected.
+// listen `mouseup` event to judge if any text is selected.
 document.addEventListener("mouseup", (e) => {
   clearLogoIcon();
   // if any text is selected, parse the `rects` and `texts` of it
@@ -75,13 +75,11 @@ mitt.on("del-note", (noteId) => {
   delHighlightRects(noteId as string);
 });
 
-// 4. listen `bold-note` event from note book
 mitt.on("bold-note", (data) => {
   const { id = "", scrollIntoView = false } = data || ({} as any);
   boldHighlightGroupRects("", id, scrollIntoView);
 });
 
-// 5. read all notes of current page, render the highlight rects if location changes.
 async function renderNoteHighlightRects() {
   const url = removeUrlPostfix(window.location.href);
   const notes = (await get(StorageKeys.notes)) as Note[];
@@ -95,13 +93,18 @@ async function renderNoteHighlightRects() {
   });
 }
 
+// initialize the extension
 async function initializeExtension() {
-  const { noteId = '' } = getUrlQuery(window.location.href) as Query;
+  // clean the rects by the last page
   delHighlightRects();
+  // render the rects of this page
   await renderNoteHighlightRects();
+  // jump to the rect if this page is opened from an item of the notebook
+  const { noteId = '' } = getUrlQuery(window.location.href) as Query;
   if (noteId) {
     await sendEmitAndWait("select-note", noteId);
     (vm as any).visible = true;
+    boldHighlightGroupRects("", noteId, true);
   }
 }
 initializeExtension();

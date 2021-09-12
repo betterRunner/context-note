@@ -11,6 +11,7 @@ import { Note } from "@/types/note";
 import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
 import { get } from "@/utils/storage";
+import mitt from '@/utils/mitt';
 import { StorageKeys } from "@/utils/constant";
 
 export default defineComponent({
@@ -28,12 +29,20 @@ export default defineComponent({
       [StorageKeys.notes]: [],
       [StorageKeys.tags]: [],
     });
-    get(StorageKeys.notes).then((res) => {
-      storage.notes = (res as Note[]) || [];
-    });
-    get(StorageKeys.tags).then((res) => {
-      storage.tags = (res as Tag[]) || [];
-    });
+
+    const updateStorage = () => {
+      get(StorageKeys.notes).then((res) => {
+        storage.notes = (res as Note[]) || [];
+      });
+      get(StorageKeys.tags).then((res) => {
+        storage.tags = (res as Tag[]) || [];
+      });
+    }
+    updateStorage();
+    mitt.on('update-storage', () => {
+      updateStorage();
+    })
+
     provide("storage", storage);
 
     return {

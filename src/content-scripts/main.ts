@@ -38,10 +38,15 @@ const vm = createApp(Popup)
   .directive("clickoutside", ClickOutside)
   .mount(mountEl);
 
-// listen `click` event of extension logo to trigger popup's visibility
+// listen messages from `background.ts`
 chrome.runtime.onMessage.addListener((message: any) => {
   if (message.toggleVisible) {
+    // open the popup by clicking the extension logo
     (vm as any).visible = !(vm as any).visible;
+  }
+  if (message.updateStorage) {
+    // emit to update the storage data by switching tab
+    mitt.emit("update-storage");
   }
 });
 
@@ -100,7 +105,7 @@ async function initializeExtension() {
   // render the rects of this page
   await renderNoteHighlightRects();
   // jump to the rect if this page is opened from an item of the notebook
-  const { noteId = '' } = getUrlQuery(window.location.href) as Query;
+  const { noteId = "" } = getUrlQuery(window.location.href) as Query;
   if (noteId) {
     await sendEmitAndWait("select-note", noteId);
     (vm as any).visible = true;
@@ -122,6 +127,9 @@ setTimeout(() => {
   }).observe(document, { subtree: true, childList: true });
 
   function onUrlChange() {
+    // reinitialize the extension
     initializeExtension();
+    // emit to update the storage data
+    mitt.emit("update-storage");
   }
 });

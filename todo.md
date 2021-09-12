@@ -7,6 +7,7 @@
 - [x] open link brings the note-id so can jump to note also
 - [x] delete the tag while deleting a note who is the only one that owns this tag
 - [x] searching notes
+- [x] tag search auto focus
 - [ ] more precise rects selection rather than coor (select the real dom by text)
 - [ ] screenshot features
   - https://javascript.plainenglish.io/a-better-alternative-to-html2canvas-in-vuejs-3-e0686755d56e

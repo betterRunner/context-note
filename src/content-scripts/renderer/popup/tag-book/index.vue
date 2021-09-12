@@ -62,6 +62,11 @@ export default {
       height: `${TAG_BOOK_HEIGHT}px`,
       minHeight: `${TAG_BOOK_HEIGHT}px`,
     });
+    watch(() => props.noteId, () => {
+      if (props.noteId) {
+        mitt.emit('tag-search-focus');
+      }
+    })
     watch(
       () => props.coor,
       () => {

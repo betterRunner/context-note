@@ -7,7 +7,7 @@
   <br>
 </p>
 
-<p align="center">A note-taking chrome extension: taking notes on web with their context.
+<p align="center">A 📝<b>note-taking chrome extension</b>: taking notes on the web with their context.
 </p>
 
 
@@ -16,7 +16,7 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 
 ## Features
 
-- 📝 Notebook, where text, note and the context would be stored.
+- 📝 Notebook, where text content, note itself and context information would be stored.
 - 🏷️ Tagbook, manage the notes neatly with handy tag system.
 - ⌨️ Rich text editor: embed [quill](https://quilljs.com/) as rich text editor.
 
@@ -34,8 +34,7 @@ yarn dev
 # 2.2 build extension in prod mode
 yarn build
 
-# 3. load it in chrome extension management
-# https://support.google.com/chrome_webstore/answer/2664769?hl=en
+# 3. load the built dist folder in `chrome extension management` following https://support.google.com/chrome_webstore/answer/2664769?hl=en
 ```
 
 ## Licence
@@ -43,6 +42,6 @@ yarn build
 Context is open source software licensed as
 [MIT](https://github.com/betterRunner/context-note/blob/main/LICENSE.md).
 
-## Contributors
+## Contribution
 
 Please read the [Contributing Guide](./.github/contributing.md) for details.

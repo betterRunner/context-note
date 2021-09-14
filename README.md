@@ -10,7 +10,9 @@
 <p align="center">A note-taking chrome extension: taking notes on web with their context.
 </p>
 
-<video src="https://user-images.githubusercontent.com/7123136/133190295-995d5595-b042-4a51-ab89-58e00d940229.mp4" />
+
+https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b89d-2956efa987a9.mp4
+
 
 ## Features
 

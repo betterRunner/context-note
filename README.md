@@ -41,8 +41,8 @@ yarn build
 ## Licence
 
 Context is open source software licensed as
-[MIT](https://github.com/alibaba/formily/blob/master/LICENSE.md).
+[MIT](https://github.com/betterRunner/context-note/blob/main/LICENSE.md).
 
 ## Contributors
 
-Sincerely invite you to build this project together!
+Please read the [Contributing Guide](./.github/contributing.md) for details.

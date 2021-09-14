@@ -1,7 +1,18 @@
 <template>
   <div v-if="notes.length" class="note-list-wrapper">
+    <el-input
+      v-model="searchText"
+      @onChange="handle"
+      placeholder="search your notes.."
+      class="note-list-search"
+      size="mini"
+    >
+      <template #prefix>
+        <i class="el-input__icon el-icon-search"></i>
+      </template>
+    </el-input>
     <Note
-      v-for="(note, i) in notes"
+      v-for="(note, i) in searchedNotes"
       :ref="
         (el) => {
           noteDivs[i] = el;
@@ -19,13 +30,18 @@
   </div>
   <div class="note-list-empty" v-else>
     <h2 class="note-list-empty-title">Your notebook is empty.</h2>
-    <p class="note-list-empty-content">Take your first note by selecting any text on the webpage and then click the popup icon!</p>
+    <p class="note-list-empty-content">
+      Take your first note by selecting any text on the webpage and then click the popup
+      icon!
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUpdate, inject, ref, computed } from "vue";
+import { defineComponent, onBeforeUpdate, inject, ref, computed, nextTick } from "vue";
 import dayjs from "dayjs";
+import { Delta } from "@vueup/vue-quill";
+
 import { Rect } from "@/types/common";
 import { Note as TNote } from "@/types/note";
 import { Storage } from "@/types/storage";
@@ -38,6 +54,7 @@ import {
   delItemFromArr,
 } from "@/utils/storage";
 import { StorageKeys } from "@/utils/constant";
+import { filterBySearchText } from "@/utils/search-filter";
 import { removeUrlPostfix } from "@/utils/utils";
 import Note from "./note.vue";
 
@@ -53,6 +70,42 @@ export default defineComponent({
       tags: [],
     });
     const notes = computed<TNote[]>(() => storage.notes);
+
+    /// search note
+    const searchText = ref("");
+    const searchedNotes = computed(() => {
+      const notes = storage.notes;
+
+      if (!searchText.value) return notes;
+
+      const plainNotes = notes.map((n) => ({
+        id: n.id,
+        plainText: (n.note as Delta)?.ops
+          ?.map((o: { insert: any }) => o?.insert || "")
+          .join(""),
+      }));
+      const filteredPlainNoteIds = filterBySearchText(
+        plainNotes,
+        "plainText",
+        searchText.value
+      ).map((n) => n.id);
+      // fitler by `searchText` in the following order
+      let ids = [
+        // 1. filter by content
+        ...filterBySearchText(notes, "content", searchText.value).map((n) => n.id),
+        // 2. filter by plain note
+        ...filteredPlainNoteIds,
+        // 3. filter by tags
+        ...notes
+          .filter((n) => !!filterBySearchText(n.tags, "", searchText.value).length)
+          .map((n) => n.id),
+        // 4. filter by link
+        ...notes.filter((n) => n.link.includes(searchText.value)).map((n) => n.id),
+      ];
+      // remove the duplicated ids
+      ids = Array.from(new Set(ids));
+      return ids.map((id) => notes.find((n) => n.id === id)).filter((n) => !!n);
+    });
 
     /// create note
     const noteDivs = ref([]);
@@ -87,11 +140,14 @@ export default defineComponent({
           $el: HTMLElement;
         })?.$el;
         if (divNote) {
-          divNote.scrollIntoView();
+          divNote.scrollIntoView({ block: 'center' });
         }
 
         // 3. focus the content editor of this note
-        mitt.emit("focus-editor", note.id);
+        // make sure above `scrollIntoView` is finished
+        setTimeout(() => {
+          mitt.emit("focus-editor", note.id);
+        })
       });
 
       // 4. send back the cb event
@@ -130,26 +186,21 @@ export default defineComponent({
     /// delete note
     const handleDeleteNote = async (note: TNote) => {
       const { id } = note;
+      const tags = storage.tags.filter(t => t.noteIds.includes(id));
+      
       // delete id from  `noteIds` of all tags
-      for (let m = 0; m < storage.tags.length; m++) {
-        let tag = storage.tags[m];
-        const index = tag.noteIds.findIndex((nid) => nid === id);
-        if (index !== -1) {
-          storage.tags = await delItemFromArrProperty(
-            StorageKeys.tags,
-            "id",
-            tag.id,
-            "noteIds",
-            id,
-            ""
-          );
-          // update the tag item
-          tag = storage.tags[m];
-          if (tag.noteIds.length === 0) {
-            console.log("delete");
-            // if the tag `noteIds` is empty, delete the tag also
-            storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
-          }
+      for (const tag of tags) {
+        storage.tags = await delItemFromArrProperty(
+          StorageKeys.tags,
+          "id",
+          tag.id,
+          "noteIds",
+          id,
+          ""
+        );
+        if (tag.noteIds.length < 2) {
+          // if the tag `noteIds` is empty, delete the tag also
+          storage.tags = await delItemFromArr(StorageKeys.tags, tag.id, "id");
         }
       }
       // delete note from `notes`
@@ -162,7 +213,7 @@ export default defineComponent({
     const curNoteId = ref("");
     const handleSelectNote = (id: string, scrollIntoView: boolean) => {
       curNoteId.value = id;
-      mitt.emit("bold-note", {
+      id && mitt.emit("bold-note", {
         id,
         scrollIntoView,
       });
@@ -171,6 +222,9 @@ export default defineComponent({
     return {
       notes,
       noteDivs,
+
+      searchText,
+      searchedNotes,
 
       handleUpdateNoteNote,
 
@@ -186,6 +240,10 @@ export default defineComponent({
 <style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+}
+.note-list-search {
+  margin-bottom: 10px;
+  background: #fff !important;
 }
 .note-list-empty {
   padding: 20px;

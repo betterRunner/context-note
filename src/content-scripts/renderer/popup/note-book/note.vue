@@ -3,23 +3,10 @@
     class="note-wrapper"
     :class="{ 'note-wrapper__notselected': notSelected }"
     :style="colorBarStyle"
+    @click="handleClickNote"
   >
     <!-- website link -->
-    <el-tooltip placement="left">
-      <div :id="`link-${note.id}`" class="note-link">{{ note.link }}</div>
-      <template #content>
-        {{ note.link }}
-        <div class="note-link-opers">
-          <span
-            class="note-link-oper"
-            v-clipboard:copy="note.link"
-            v-clipboard:success="handleCopy"
-            >Copy</span
-          >
-          <span class="note-link-oper" @click="handleOpenLink(note.link)">Open</span>
-        </div>
-      </template>
-    </el-tooltip>
+    <div :id="`link-${note.id}`" class="note-link"><span @click="handleOpenLink(note)" class="note-link-content">{{ note.link }}</span></div>
     <!-- opers area -->
     <div class="note-opers">
       <!-- delete icon -->
@@ -96,8 +83,10 @@ import { Note } from "@/types/note";
 import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
 import { Coor } from "@/types/common";
+import { Query } from "@/types/dom";
 import mitt from "@/utils/mitt";
 import TagBook from "../tag-book/index.vue";
+import { wrapUrlWithQuery } from '@/utils/utils';
 
 export default {
   components: {
@@ -131,8 +120,12 @@ export default {
     const handleCopy = () => {
       ElMessage.success("Copied");
     };
-    const handleOpenLink = (link: string) => {
-      window.open(link);
+    const handleOpenLink = (note: Note) => {
+      const query: Query = {
+        noteId: note.id
+      }
+      const url = wrapUrlWithQuery(note.link, query)
+      window.open(url);
     };
 
     /// is note selected or not
@@ -201,14 +194,17 @@ export default {
       nextTick(() => ctx.emit("focus", id));
     });
 
+    const handleClickNote = () => {
+      // make sure the select event is trigger after `handleClickOutsideEditor`
+      nextTick(() => ctx.emit("select", props.note.id));
+    }
     const handleClickEditor = () => {
       enableEditor.value = true;
-      nextTick(() => ctx.emit("select", props.note.id));
     };
     const handleClickOutsideEditor = () => {
       enableEditor.value = false;
       // save the note
-      if (!notSelected) {
+      if (!notSelected.value) {
         // quill would turn `ops` from array to indexes object, turn it back to array
         const content = !editorContent.value
           ? ""
@@ -242,6 +238,7 @@ export default {
       editorToolbar,
       editorContent,
       editorDom,
+      handleClickNote,
       handleClickEditor,
       handleClickOutsideEditor,
     };
@@ -277,6 +274,8 @@ export default {
     overflow: hidden;
     width: 400px;
     color: #409eff;
+  }
+  .note-link-content {
     cursor: pointer;
   }
 
@@ -294,6 +293,7 @@ export default {
       flex-wrap: wrap;
       width: 300px;
       position: relative;
+      font-size: 14px;
 
       .note-tag-adder {
         cursor: pointer;

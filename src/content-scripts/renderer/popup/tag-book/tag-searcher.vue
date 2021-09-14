@@ -2,7 +2,9 @@
   <div class="tag-searcher-wrapper">
     <el-input
       v-model="searchText"
+      ref="taginput"
       size="mini"
+      autofocus
       placeholder="create or search tag.."
       @keydown.enter="handleEnter"
     ></el-input>
@@ -33,6 +35,10 @@ export default {
         });
       }
     );
+    const taginput = ref(null);
+    mitt.on('tag-search-focus', () => {
+      (taginput.value as unknown as HTMLElement)?.focus();
+    })
     const handleEnter = () => {
       if (!searchText.value) return;
 
@@ -44,6 +50,7 @@ export default {
     });
 
     return {
+      taginput,
       searchText,
       handleEnter,
     };

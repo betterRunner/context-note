@@ -34,9 +34,6 @@
   "permissions": [
     "unlimitedStorage",
     "tabs",
-    "activeTab",
-    "webNavigation",
-    "http://*/*",
-    "https://*/*"
+    "activeTab"
   ]
 }

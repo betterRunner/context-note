@@ -1,5 +1,5 @@
 import { isObject } from "@/utils/utils";
-import { getNodeText } from "@/utils/dom";
+import { filterAncestorNodes, getDomQueryPath, getNodeText } from "@/utils/dom";
 import { Rect } from "@/types/common";
 
 /**
@@ -98,14 +98,37 @@ function filterInvalidCoorRects(rects: Rect[]) {
   return rects.filter((ele) => !excludeRects.includes(ele));
 }
 
+function parseSelectionRects(range: Range) {
+  let rects = Array.from(range.getClientRects()).map((r) => ({
+    x: r.x,
+    y: r.y + window.scrollY,
+    width: r.width,
+    height: r.height,
+  }));
+  rects = filterDuplicateRects(rects);
+  rects = filterInvalidCoorRects(rects);
+  return rects;
+}
+
+function parseSelectedQueryPaths(selection: Selection, range: Range) {
+  const allWithinRangeParentNodes = (range.commonAncestorContainer as HTMLElement)?.getElementsByTagName(
+    "*"
+  );
+  const allSelectedNodes = Array.from(allWithinRangeParentNodes).filter(n => selection.containsNode(n, true));
+  const textNodes = filterAncestorNodes(allSelectedNodes);
+  return textNodes.map(n => getDomQueryPath(n as HTMLElement));
+}
+
 /**
  * Get the `SelectionMeta` from current mouse selection object.
  */
 export interface SelectionMeta {
+  queryPaths: string[];
   rects: Rect[];
   texts: string[];
 }
 export function parseRectsAndTextFromSelection(): SelectionMeta {
+  let queryPaths: string[] = [];
   let rects: Rect[] = [];
   let texts: string[] = [];
   try {
@@ -114,22 +137,22 @@ export function parseRectsAndTextFromSelection(): SelectionMeta {
     if (selection) {
       const range = selection.getRangeAt(0);
       if (range) {
+        // 1. texts
         const cloneFragment = range.cloneContents();
         texts = getNodeTextList(cloneFragment);
-        rects = Array.from(range.getClientRects()).map((r) => ({
-          x: r.x,
-          y: r.y + window.scrollY,
-          width: r.width,
-          height: r.height,
-        }));
-        rects = filterDuplicateRects(rects);
-        rects = filterInvalidCoorRects(rects);
+
+        // 2. rects
+        rects = parseSelectionRects(range);
+        
+        // 3. queryPaths
+        queryPaths = parseSelectedQueryPaths(selection, range);
       }
     }
   } catch (err) {
     console.log(err);
   }
   return {
+    queryPaths,
     rects,
     texts,
   };

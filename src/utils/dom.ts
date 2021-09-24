@@ -44,7 +44,7 @@ export function getDomQueryPath(el: HTMLElement) {
     if (el.hasAttribute("id") && el.id != "") {
       stack.unshift(`${name}#${el.id}`);
     } else if (sibCount > 1) {
-      stack.unshift(`${name}:n-th-of-type(${sibIndex + 1})`);
+      stack.unshift(`${name}:nth-of-type(${sibIndex + 1})`);
     } else {
       stack.unshift(name);
     }

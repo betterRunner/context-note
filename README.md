@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <a href="https://github.com/betterRunner/context-note">
+  <a href="https://chrome.google.com/webstore/detail/context-note/enmeffcefbiehghanidhebgiccljmncl?hl=zh-CN">
     <img width="300" src="https://user-images.githubusercontent.com/7123136/132152458-37a8ec1d-dfb2-4957-8451-44cf01312820.png">
   </a>
   <br>
@@ -17,8 +17,8 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 ## Features
 
 - 📝 Notebook, where text content, note itself and context information would be stored.
-- 🏷️ Tagbook, manage the notes neatly with handy tag system.
-- ⌨️ Rich text editor: embed [quill](https://quilljs.com/) as rich text editor.
+- 🏷️ Tagbook, manage the notes neatly with a handy tag system.
+- ⌨️ Rich text editor: embed [quill](https://quilljs.com/) as the rich text editor.
 
 ## Develop
 

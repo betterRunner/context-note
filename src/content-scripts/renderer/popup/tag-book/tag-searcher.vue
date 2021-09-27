@@ -15,7 +15,7 @@
 import { PropType, ref, watch } from "vue";
 import { Tag } from "@/types/tag";
 import mitt from "@/utils/mitt";
-import { filterBySearchText } from "@/utils/search-filter";
+import { filterArrBySearchText } from "@/utils/text";
 export default {
   props: {
     tags: {
@@ -28,7 +28,7 @@ export default {
     watch(
       () => searchText.value,
       (val) => {
-        const searchTags = filterBySearchText(props.tags, "name", val);
+        const searchTags = filterArrBySearchText(props.tags, "name", val);
         ctx.emit("on-search", {
           text: searchText.value,
           result: searchTags,

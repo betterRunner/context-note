@@ -41,7 +41,7 @@ export function getDomQueryPath(el: HTMLElement) {
       }
     }
     const name = el.nodeName.toLowerCase();
-    if (el.hasAttribute("id") && el.id != "") {
+    if (typeof el.hasAttribute === 'function' && el.hasAttribute("id") && el.id != "") {
       stack.unshift(`${name}#${el.id}`);
     } else if (sibCount > 1) {
       stack.unshift(`${name}:nth-of-type(${sibIndex + 1})`);

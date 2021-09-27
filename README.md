@@ -16,7 +16,7 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 
 ## Features
 
-- 📝 Notebook, where text content, note itself and context information would be stored.
+- 📝 Notebook, reviewing notes on a book, while jumping back to the context for details.
 - 🏷️ Tagbook, manage the notes neatly with a handy tag system.
 - ⌨️ Rich text editor: embed [quill](https://quilljs.com/) as the rich text editor.
 

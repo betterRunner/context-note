@@ -9,6 +9,7 @@
 
 <p align="center">A 📝<b>note-taking chrome extension</b>: taking notes on the web with their context.
 </p>
+<p align="center">Built by <a href="https://v3.vuejs.org/">Vue3</a> & <a href="https://vitejs.dev/">Vite2</a>.</p>
 
 
 https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b89d-2956efa987a9.mp4
@@ -23,8 +24,6 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 You can read more from [here](https://medium.com/@neochan_66076/take-your-notes-on-the-web-with-their-context-77e8b9aaf1be).
 
 ## Develop
-
-Tags: `Chrome Extension`, `Vue3`, `Vite`, `element-plus`
 
 ```bash
 # 1. install dependencies

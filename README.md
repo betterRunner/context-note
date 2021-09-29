@@ -21,9 +21,9 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 
 - 📝 Notebook, reviewing notes on a book, while jumping back to the context for details.
 - 🏷️ Tagbook, manage the notes neatly with a handy tag system.
-- ⌨️ Rich text editor: embed [quill](https://quilljs.com/){:target="_blank"} as the rich text editor.
+- ⌨️ Rich text editor: embed [quill](https://quilljs.com/) as the rich text editor.
 
-You can read more from [here](https://medium.com/@neochan_66076/take-your-notes-on-the-web-with-their-context-77e8b9aaf1be){:target="_blank"}.
+You can read more from [here](https://medium.com/@neochan_66076/take-your-notes-on-the-web-with-their-context-77e8b9aaf1be).
 
 ## Develop
 

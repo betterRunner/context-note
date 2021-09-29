@@ -24,8 +24,9 @@ export const getNodeText = (node: any): string => {
   return text;
 };
 
+const filterNames = ["#text"];
 export function getDomQueryPath(el: HTMLElement) {
-  if (!el) return '';
+  if (!el) return "";
 
   const stack = [];
   while (el.parentNode != null) {
@@ -41,29 +42,33 @@ export function getDomQueryPath(el: HTMLElement) {
       }
     }
     const name = el.nodeName.toLowerCase();
-    if (typeof el.hasAttribute === 'function' && el.hasAttribute("id") && el.id != "") {
+    if (
+      typeof el.hasAttribute === "function" &&
+      el.hasAttribute("id") &&
+      el.id != ""
+    ) {
       stack.unshift(`${name}#${el.id}`);
     } else if (sibCount > 1) {
       stack.unshift(`${name}:nth-of-type(${sibIndex + 1})`);
-    } else {
+    } else if (!filterNames.some((n) => name.startsWith(n))) {
       stack.unshift(name);
     }
     el = el.parentNode as HTMLElement;
   }
 
-  return stack.slice(1).join(' '); // removes the html element
+  return stack.slice(1).join(" "); // removes the html element
 }
 
 export function filterAncestorNodes(nodes: Node[]) {
   const ancestors = new Set();
   for (const node of nodes) {
     let parent = node.parentNode;
-    while(parent) {
+    while (parent) {
       if (nodes.includes(parent) && node.textContent) {
         ancestors.add(parent);
       }
       parent = parent.parentNode;
     }
   }
-  return nodes.filter(n => !ancestors.has(n));
+  return nodes.filter((n) => !ancestors.has(n));
 }

@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <a href="https://chrome.google.com/webstore/detail/context-note/enmeffcefbiehghanidhebgiccljmncl?hl=zh-CN">
+  <a href="https://chrome.google.com/webstore/detail/context-note/enmeffcefbiehghanidhebgiccljmncl?hl=zh-CN" target="_blank">
     <img width="300" src="https://user-images.githubusercontent.com/7123136/132152458-37a8ec1d-dfb2-4957-8451-44cf01312820.png">
   </a>
   <br>
@@ -9,7 +9,7 @@
 
 <p align="center">A 📝<b>note-taking chrome extension</b>: taking notes on the web with their context.
 </p>
-<p align="center">Built by <a href="https://v3.vuejs.org/">Vue3</a> & <a href="https://vitejs.dev/">Vite2</a>.</p>
+<p align="center">Built by <a href="https://v3.vuejs.org/" target="_blank">Vue3</a> & <a href="https://vitejs.dev/" target="_blank">Vite2</a>.</p>
 
 https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b89d-2956efa987a9.mp4
 
@@ -21,9 +21,9 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 
 - 📝 Notebook, reviewing notes on a book, while jumping back to the context for details.
 - 🏷️ Tagbook, manage the notes neatly with a handy tag system.
-- ⌨️ Rich text editor: embed [quill](https://quilljs.com/) as the rich text editor.
+- ⌨️ Rich text editor: embed [quill](https://quilljs.com/){:target="_blank"} as the rich text editor.
 
-You can read more from [here](https://medium.com/@neochan_66076/take-your-notes-on-the-web-with-their-context-77e8b9aaf1be).
+You can read more from [here](https://medium.com/@neochan_66076/take-your-notes-on-the-web-with-their-context-77e8b9aaf1be){:target="_blank"}.
 
 ## Develop
 

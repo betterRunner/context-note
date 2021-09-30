@@ -1,5 +1,5 @@
 import { isObject } from "@/utils/utils";
-import { filterAncestorNodes, getDomQueryPath, getNodeText } from "@/utils/dom";
+import { getNodeText } from "@/utils/dom";
 import { Rect } from "@/types/common";
 
 /**
@@ -110,25 +110,14 @@ function parseSelectionRects(range: Range) {
   return rects;
 }
 
-function parseSelectedQueryPaths(selection: Selection, range: Range) {
-  const allWithinRangeParentNodes = (range.commonAncestorContainer as HTMLElement)?.getElementsByTagName(
-    "*"
-  );
-  const allSelectedNodes = Array.from(allWithinRangeParentNodes).filter(n => selection.containsNode(n, true));
-  const textNodes = filterAncestorNodes(allSelectedNodes);
-  return textNodes.map(n => getDomQueryPath(n as HTMLElement));
-}
-
 /**
  * Get the `SelectionMeta` from current mouse selection object.
  */
 export interface SelectionMeta {
-  queryPaths: string[];
   rects: Rect[];
   texts: string[];
 }
 export function parseRectsAndTextFromSelection(): SelectionMeta {
-  let queryPaths: string[] = [];
   let rects: Rect[] = [];
   let texts: string[] = [];
   try {
@@ -143,16 +132,12 @@ export function parseRectsAndTextFromSelection(): SelectionMeta {
 
         // 2. rects
         rects = parseSelectionRects(range);
-        
-        // 3. queryPaths
-        queryPaths = parseSelectedQueryPaths(selection, range);
       }
     }
   } catch (err) {
     console.log(err);
   }
   return {
-    queryPaths,
     rects,
     texts,
   };

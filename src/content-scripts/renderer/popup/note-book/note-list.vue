@@ -2,7 +2,6 @@
   <div v-if="notes.length" class="note-list-wrapper">
     <el-input
       v-model="searchText"
-      @onChange="handle"
       placeholder="search your notes.."
       class="note-list-search"
       size="mini"

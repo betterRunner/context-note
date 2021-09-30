@@ -1,3 +1,3 @@
 export interface Query {
-    noteId: string;
+  noteId: string;
 }

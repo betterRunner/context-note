@@ -6,25 +6,12 @@
     @click="handleClickNote"
   >
     <!-- website link -->
-    <div :id="`link-${note.id}`" class="note-link"><span @click="handleOpenLink(note)" class="note-link-content">{{ note.link }}</span></div>
+    <div :id="`link-${note.id}`" class="note-link">
+      <span @click="handleOpenLink(note)" class="note-link-content">{{ note.link }}</span>
+    </div>
+
     <!-- opers area -->
     <div class="note-opers">
-      <!-- delete icon -->
-      <el-popconfirm
-        confirmButtonText="yes"
-        cancelButtonText="no"
-        icon="el-icon-info"
-        iconColor="red"
-        title="delete this note?"
-        size="small"
-        @confirm="handleDeleteNote"
-      >
-        <template #reference>
-          <el-icon class="note-delete-icon" :size="12">
-            <Delete></Delete>
-          </el-icon>
-        </template>
-      </el-popconfirm>
       <!-- tag=list -->
       <div :id="`note-item-${note.id || ''}`" class="note-tag-wrapper">
         <div
@@ -48,6 +35,8 @@
       <!-- time -->
       <div class="note-time">{{ dayjs.unix(note.createTime).format("MM/DD HH:mm") }}</div>
     </div>
+    <!-- more opers -->
+    <More :opers="moreOpers" />
     <!-- note content -->
     <p class="note-content">{{ note.content }}</p>
     <!-- note editor -->
@@ -70,10 +59,9 @@
 </template>
 
 <script lang="ts">
-import { inject, ref, computed, watch, nextTick, PropType } from "vue";
+import { inject, ref, computed, nextTick, PropType } from "vue";
 import randomcolor from "randomcolor";
 import dayjs from "dayjs";
-import { Delete } from "@element-plus/icons";
 import { ElMessage } from "element-plus";
 
 import { QuillEditor, Delta } from "@vueup/vue-quill";
@@ -82,17 +70,18 @@ import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { Note } from "@/types/note";
 import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
-import { Coor } from "@/types/common";
+import { Coor, Oper } from "@/types/common";
 import { Query } from "@/types/dom";
 import mitt from "@/utils/mitt";
+import { wrapUrlWithQuery } from "@/utils/utils";
 import TagBook from "../tag-book/index.vue";
-import { wrapUrlWithQuery } from '@/utils/utils';
+import More from "./more.vue";
 
 export default {
   components: {
     TagBook,
-    Delete,
     QuillEditor,
+    More,
   },
   props: {
     curNoteId: {
@@ -115,6 +104,11 @@ export default {
       tags: [],
     });
 
+    /// is note selected or not
+    const notSelected = computed(
+      () => props.curNoteId && props.curNoteId !== props.note.id
+    );
+
     /// note link
     const noteLink = ref(props.note.link || "");
     const handleCopy = () => {
@@ -122,21 +116,22 @@ export default {
     };
     const handleOpenLink = (note: Note) => {
       const query: Query = {
-        noteId: note.id
-      }
-      const url = wrapUrlWithQuery(note.link, query)
+        noteId: note.id,
+      };
+      const url = wrapUrlWithQuery(note.link, query);
       window.open(url);
     };
 
-    /// is note selected or not
-    const notSelected = computed(
-      () => props.curNoteId && props.curNoteId !== props.note.id
-    );
-
-    /// close note
-    const handleDeleteNote = () => {
-      ctx.emit("delete");
-    };
+    /// more opers
+    const moreOpers = ref<Oper[]>([
+      {
+        title: "Delete",
+        onClick: () => {
+          ctx.emit("delete");
+        },
+        isConfirm: true,
+      },
+    ]);
 
     /// note tags
     const getNoteTagItemStyle = (tag: Tag) => {
@@ -197,7 +192,7 @@ export default {
     const handleClickNote = () => {
       // make sure the select event is trigger after `handleClickOutsideEditor`
       nextTick(() => ctx.emit("select", props.note.id));
-    }
+    };
     const handleClickEditor = () => {
       enableEditor.value = true;
     };
@@ -228,7 +223,7 @@ export default {
       handleCopy,
       handleOpenLink,
 
-      handleDeleteNote,
+      moreOpers,
 
       getNoteTagItemStyle,
       tags,
@@ -258,14 +253,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-
-  .note-delete-icon {
-    position: absolute;
-    top: 0px;
-    right: 15px;
-    cursor: pointer;
-    padding: 5px;
-  }
 
   .note-link {
     font-size: 12px;

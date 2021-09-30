@@ -26,7 +26,7 @@
 import { PropType, ref, computed, watch } from "vue";
 import dayjs from "dayjs";
 import randomColor from "randomcolor";
-import { transArrInfoLetterMap } from "@/utils/letter-map";
+import { transArrInfoLetterMap } from "@/utils/text";
 import { Tag } from "@/types/tag";
 import TagList from "./tag-list.vue";
 export default {

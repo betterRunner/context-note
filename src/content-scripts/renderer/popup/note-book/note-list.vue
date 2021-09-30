@@ -2,7 +2,6 @@
   <div v-if="notes.length" class="note-list-wrapper">
     <el-input
       v-model="searchText"
-      @onChange="handle"
       placeholder="search your notes.."
       class="note-list-search"
       size="mini"
@@ -54,7 +53,7 @@ import {
   delItemFromArr,
 } from "@/utils/storage";
 import { StorageKeys } from "@/utils/constant";
-import { filterBySearchText } from "@/utils/search-filter";
+import { filterArrBySearchText } from "@/utils/text";
 import { removeUrlPostfix } from "@/utils/utils";
 import Note from "./note.vue";
 
@@ -84,7 +83,7 @@ export default defineComponent({
           ?.map((o: { insert: any }) => o?.insert || "")
           .join(""),
       }));
-      const filteredPlainNoteIds = filterBySearchText(
+      const filteredPlainNoteIds = filterArrBySearchText(
         plainNotes,
         "plainText",
         searchText.value
@@ -92,12 +91,12 @@ export default defineComponent({
       // fitler by `searchText` in the following order
       let ids = [
         // 1. filter by content
-        ...filterBySearchText(notes, "content", searchText.value).map((n) => n.id),
+        ...filterArrBySearchText(notes, "content", searchText.value).map((n) => n.id),
         // 2. filter by plain note
         ...filteredPlainNoteIds,
         // 3. filter by tags
         ...notes
-          .filter((n) => !!filterBySearchText(n.tags, "", searchText.value).length)
+          .filter((n) => !!filterArrBySearchText(n.tags, "", searchText.value).length)
           .map((n) => n.id),
         // 4. filter by link
         ...notes.filter((n) => n.link.includes(searchText.value)).map((n) => n.id),

@@ -48,6 +48,3 @@ Context is open source software licensed as
 ## Contribution
 
 Please read the [Contributing Guide](./.github/contributing.md) for details.
-
-## Buy me a coffee 💪
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/jimlau)

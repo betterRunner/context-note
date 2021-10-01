@@ -36,7 +36,7 @@
       <div class="note-time">{{ dayjs.unix(note.createTime).format("MM/DD HH:mm") }}</div>
     </div>
     <!-- more opers -->
-    <More :opers="moreOpers" />
+    <More direction="column" :size="2" :opers="moreOpers" />
     <!-- note content -->
     <p class="note-content">{{ note.content }}</p>
     <!-- note editor -->
@@ -75,7 +75,7 @@ import { Query } from "@/types/dom";
 import mitt from "@/utils/mitt";
 import { wrapUrlWithQuery } from "@/utils/utils";
 import TagBook from "../tag-book/index.vue";
-import More from "./more.vue";
+import More from "../shared/more.vue";
 
 export default {
   components: {

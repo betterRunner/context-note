@@ -1,13 +1,11 @@
 <template>
-  <div class="note-book-wrapper">
-    <NoteList></NoteList>
-    <TagBook
-      v-show="!!curNoteId"
-      :noteId="curNoteId"
-      :coor="tagBookCoor"
-      @close="handleCloseTagBook"
-    ></TagBook>
-  </div>
+  <NoteList></NoteList>
+  <TagBook
+    v-show="!!curNoteId"
+    :noteId="curNoteId"
+    :coor="tagBookCoor"
+    @close="handleCloseTagBook"
+  ></TagBook>
 </template>
 
 <script lang="ts">
@@ -48,17 +46,4 @@ export default {
 </script>
 
 <style scoped>
-.note-book-wrapper {
-  position: fixed;
-  right: 0px;
-  top: 0px;
-  width: 500px;
-  min-width: 500px;
-  height: 100vh;
-  overflow-y: scroll;
-  background-color: rgba(100, 108, 255, 0.8);
-  opacity: 1;
-  border-radius: 10px;
-  z-index: 9999;
-}
 </style>

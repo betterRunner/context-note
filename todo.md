@@ -1,13 +1,4 @@
-- [x] store note in chrome.storage
-- [x] jump to the note context
-- [x] store tag in chrome.storage
-- [x] show the rects at initial state if this page has
-- [x] delete note
-- [x] url change clear the highlights
-- [x] open link brings the note-id so can jump to note also
-- [x] delete the tag while deleting a note who is the only one that owns this tag
-- [x] searching notes
-- [x] tag search auto focus
+- [ ] export/import notes' data by json
 - [ ] more precise rects selection rather than coor (select the real dom by text)
 - [ ] screenshot features
   - https://javascript.plainenglish.io/a-better-alternative-to-html2canvas-in-vuejs-3-e0686755d56e

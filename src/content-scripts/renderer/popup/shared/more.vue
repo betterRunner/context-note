@@ -7,18 +7,15 @@
   >
     <template #reference>
       <div class="more-icon">
-        <div :style="dotWrapperStyle" class="more-icon-wrapper">
+        <div :style="dotWrapperStyle">
           <div
             v-for="item in [1, 2, 3]"
             :key="item"
-            class="more-icon-dot"
             :style="dotStyle"
           ></div>
         </div>
-        <div class="more-popup"></div>
       </div>
     </template>
-    <!-- delete icon -->
 
     <div class="more-opers">
       <div
@@ -77,6 +74,8 @@ export default {
       border: `${px} solid ${props.color}`,
       "border-radius": px,
       margin: px,
+      cursor: 'pointer',
+      'user-select': 'none',
     });
 
     const handleClick = (oper: Oper) => {
@@ -103,13 +102,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.more-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  padding: 5px;
-}
 .more-opers {
   .more-opers-item {
     cursor: pointer;

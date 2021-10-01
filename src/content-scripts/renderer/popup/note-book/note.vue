@@ -36,7 +36,9 @@
       <div class="note-time">{{ dayjs.unix(note.createTime).format("MM/DD HH:mm") }}</div>
     </div>
     <!-- more opers -->
-    <More direction="column" :size="2" :opers="moreOpers" />
+    <div class="note-more-opers">
+      <More direction="column" :size="2" :opers="moreOpers" />
+    </div>
     <!-- note content -->
     <p class="note-content">{{ note.content }}</p>
     <!-- note editor -->
@@ -327,6 +329,13 @@ export default {
 }
 .note-wrapper__notselected {
   opacity: 0.5;
+}
+.note-more-opers {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  padding: 5px;
 }
 .note-link-opers {
   padding: 5px 0px;

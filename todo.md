@@ -1,4 +1,6 @@
 - [ ] export/import notes' data by json
+  - [x] export
+  - [ ] import
 - [ ] more precise rects selection rather than coor (select the real dom by text)
 - [ ] screenshot features
   - https://javascript.plainenglish.io/a-better-alternative-to-html2canvas-in-vuejs-3-e0686755d56e

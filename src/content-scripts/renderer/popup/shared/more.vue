@@ -1,19 +1,21 @@
 <template>
   <el-popover
-    placement="bottom-end"
+    :placement="placement"
     :width="200"
     trigger="click"
     @click.prevent.stop="() => {}"
   >
     <template #reference>
       <div class="more-icon">
-        <div>
-          <div v-for="item in [1, 2, 3]" :key="item" class="more-icon-dot"></div>
+        <div :style="dotWrapperStyle">
+          <div
+            v-for="item in [1, 2, 3]"
+            :key="item"
+            :style="dotStyle"
+          ></div>
         </div>
-        <div class="more-popup"></div>
       </div>
     </template>
-    <!-- delete icon -->
 
     <div class="more-opers">
       <div
@@ -29,18 +31,53 @@
 </template>
 
 <script lang="ts">
-import { PropType } from "vue";
+import { ref, PropType } from "vue";
 import { ElMessageBox } from "element-plus";
 import { Oper } from "@/types/common";
 
+enum Direction {
+  row = "row",
+  column = "column",
+}
 export default {
   props: {
+    size: {
+      type: Number,
+      default: 2,
+    },
+    direction: {
+      type: Object as PropType<Direction>,
+      default: Direction.row,
+    },
+    color: {
+      type: String,
+      default: "#999",
+    },
+    placement: {
+      type: String,
+      default: "bottom-end",
+    },
     opers: {
       type: Object as PropType<Oper[]>,
       default: [],
     },
   },
-  setup() {
+  setup(props) {
+    const px = `${props.size}px`;
+    const dotWrapperStyle = ref({
+      display: "flex",
+      "flex-direction": props.direction,
+    });
+    const dotStyle = ref({
+      width: px,
+      height: px,
+      border: `${px} solid ${props.color}`,
+      "border-radius": px,
+      margin: px,
+      cursor: 'pointer',
+      'user-select': 'none',
+    });
+
     const handleClick = (oper: Oper) => {
       if (oper.isConfirm) {
         ElMessageBox.confirm("delete this note?", "Warning", {
@@ -56,6 +93,8 @@ export default {
     };
 
     return {
+      dotWrapperStyle,
+      dotStyle,
       handleClick,
     };
   },
@@ -63,23 +102,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.more-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  padding: 5px;
-
-  .more-icon-dot {
-    width: 2px;
-    height: 2px;
-    color: #000;
-    content: " ";
-    border: 2px solid #999;
-    border-radius: 2px;
-    margin: 2px;
-  }
-}
 .more-opers {
   .more-opers-item {
     cursor: pointer;

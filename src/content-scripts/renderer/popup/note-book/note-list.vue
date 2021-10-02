@@ -248,6 +248,7 @@ export default defineComponent({
 <style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+  margin-bottom: 20px;
 
   .note-list-search {
     margin-bottom: 10px;

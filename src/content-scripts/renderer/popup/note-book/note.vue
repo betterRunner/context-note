@@ -256,6 +256,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   width: 460px;
+  height: 100%;
 
   .note-link {
     font-size: 12px;

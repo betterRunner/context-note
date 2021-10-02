@@ -10,22 +10,26 @@
         <i class="el-input__icon el-icon-search"></i>
       </template>
     </el-input>
-    <Note
-      v-for="(note, i) in searchedNotes"
-      :ref="
-        (el) => {
-          noteDivs[i] = el;
-        }
-      "
-      :id="note.id"
-      :note="note"
-      :curNoteId="curNoteId"
-      :key="note.id"
-      @delete="handleDeleteNote(note)"
-      @updateNoteNote="handleUpdateNoteNote"
-      @focus="(noteId) => handleSelectNote(noteId, false)"
-      @select="(noteId) => handleSelectNote(noteId, true)"
-    ></Note>
+    <div :class="[expanded ? 'note-list__expanded' : 'note-list']">
+      <!-- list by time -->
+      <Note
+        v-for="(note, i) in searchedNotes"
+        :ref="
+          (el) => {
+            noteDivs[i] = el;
+          }
+        "
+        :id="note.id"
+        :note="note"
+        :curNoteId="curNoteId"
+        :key="note.id"
+        @delete="handleDeleteNote(note)"
+        @updateNoteNote="handleUpdateNoteNote"
+        @focus="(noteId) => handleSelectNote(noteId, false)"
+        @select="(noteId) => handleSelectNote(noteId, true)"
+      ></Note>
+      <!-- list by tag -->
+    </div>
   </div>
   <div class="note-list-empty" v-else>
     <h2 class="note-list-empty-title">Your notebook is empty.</h2>
@@ -62,8 +66,13 @@ export default defineComponent({
   components: {
     Note,
   },
-  props: {},
-  setup() {
+  props: {
+    expanded: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  setup(props) {
     const storage: Storage = inject("storage", {
       notes: [],
       tags: [],
@@ -139,14 +148,14 @@ export default defineComponent({
           $el: HTMLElement;
         })?.$el;
         if (divNote) {
-          divNote.scrollIntoView({ block: 'center' });
+          divNote.scrollIntoView({ block: "center" });
         }
 
         // 3. focus the content editor of this note
         // make sure above `scrollIntoView` is finished
         setTimeout(() => {
           mitt.emit("focus-editor", note.id);
-        })
+        });
       });
 
       // 4. send back the cb event
@@ -185,8 +194,8 @@ export default defineComponent({
     /// delete note
     const handleDeleteNote = async (note: TNote) => {
       const { id } = note;
-      const tags = storage.tags.filter(t => t.noteIds.includes(id));
-      
+      const tags = storage.tags.filter((t) => t.noteIds.includes(id));
+
       // delete id from  `noteIds` of all tags
       for (const tag of tags) {
         storage.tags = await delItemFromArrProperty(
@@ -212,18 +221,18 @@ export default defineComponent({
     const curNoteId = ref("");
     const handleSelectNote = (id: string, scrollIntoView: boolean) => {
       curNoteId.value = id;
-      id && mitt.emit("bold-note", {
-        id,
-        scrollIntoView,
-      });
+      id &&
+        mitt.emit("bold-note", {
+          id,
+          scrollIntoView,
+        });
     };
 
     return {
       notes,
-      noteDivs,
-
       searchText,
       searchedNotes,
+      noteDivs,
 
       handleUpdateNoteNote,
 
@@ -239,11 +248,27 @@ export default defineComponent({
 <style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+
+  .note-list-search {
+    margin-bottom: 10px;
+    background: #fff !important;
+    max-width: 500px;
+  }
+
+  .note-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .note-list__expanded {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    > * {
+      margin: 10px 20px 10px 0;
+    }
+  }
 }
-.note-list-search {
-  margin-bottom: 10px;
-  background: #fff !important;
-}
+
 .note-list-empty {
   padding: 20px;
   display: flex;

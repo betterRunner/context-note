@@ -1,46 +1,5 @@
-<template>
-  <div v-if="notes.length" class="note-list-wrapper">
-    <el-input
-      v-model="searchText"
-      placeholder="search your notes.."
-      class="note-list-search"
-      size="mini"
-    >
-      <template #prefix>
-        <i class="el-input__icon el-icon-search"></i>
-      </template>
-    </el-input>
-    <div :class="[expanded ? 'note-list__expanded' : 'note-list']">
-      <!-- list by time -->
-      <Note
-        v-for="(note, i) in searchedNotes"
-        :ref="
-          (el) => {
-            noteDivs[i] = el;
-          }
-        "
-        :id="note.id"
-        :note="note"
-        :curNoteId="curNoteId"
-        :key="note.id"
-        @delete="handleDeleteNote(note)"
-        @updateNoteNote="handleUpdateNoteNote"
-        @focus="(noteId) => handleSelectNote(noteId, false)"
-        @select="(noteId) => handleSelectNote(noteId, true)"
-      ></Note>
-      <!-- list by tag -->
-    </div>
-  </div>
-  <div class="note-list-empty" v-else>
-    <h2 class="note-list-empty-title">Your notebook is empty.</h2>
-    <p class="note-list-empty-content">
-      Take your first note by selecting any text on the webpage and then click the popup
-      icon!
-    </p>
-  </div>
-</template>
 
-<script lang="ts">
+<script lang="tsx">
 import { defineComponent, onBeforeUpdate, inject, ref, computed, nextTick } from "vue";
 import dayjs from "dayjs";
 import { Delta } from "@vueup/vue-quill";
@@ -77,7 +36,7 @@ export default defineComponent({
       notes: [],
       tags: [],
     });
-    const notes = computed<TNote[]>(() => storage.notes);
+    const notes = computed<TNote[]>(() => storage.notes || []);
 
     /// search note
     const searchText = ref("");
@@ -116,7 +75,7 @@ export default defineComponent({
     });
 
     /// create note
-    const noteDivs = ref([]);
+    const noteDivs = ref<Element[]>([]);
     // make sure to reset the refs before each update
     onBeforeUpdate(() => {
       noteDivs.value = [];
@@ -144,9 +103,7 @@ export default defineComponent({
       // make sure the note dom is created
       setTimeout(() => {
         // 2. scroll to the note item
-        const divNote = (noteDivs.value[noteDivs.value.length - 1] as {
-          $el: HTMLElement;
-        })?.$el;
+        const divNote = (noteDivs.value[noteDivs.value.length - 1])?.$el;
         if (divNote) {
           divNote.scrollIntoView({ block: "center" });
         }
@@ -228,19 +185,39 @@ export default defineComponent({
         });
     };
 
-    return {
-      notes,
-      searchText,
-      searchedNotes,
-      noteDivs,
-
-      handleUpdateNoteNote,
-
-      handleDeleteNote,
-
-      curNoteId,
-      handleSelectNote,
-    };
+    return () => notes.value.length ? (
+      <div class="note-list-wrapper">
+        <el-input
+          v-model={searchText.value}
+          placeholder="search your notes.."
+          class="note-list-search"
+          size="mini"
+        ></el-input>
+        <div class={props.expanded ? "note-list__expanded" : "note-list"}>
+          {searchedNotes.value.map((note, i) => (
+            <Note
+              ref={(el: any) => {
+                noteDivs.value[i] = el;
+              }}
+              note={note as TNote}
+              curNoteId={curNoteId.value}
+              onDelete={() => handleDeleteNote(note as TNote)}
+              onUpdateNoteNote={handleUpdateNoteNote}
+              onFocus={(noteId: string) => handleSelectNote(noteId, false)}
+              onSelect={(noteId: string) => handleSelectNote(noteId, true)}
+            ></Note>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div class="note-list-empty">
+        <h2 class="note-list-empty-title">Your notebook is empty.</h2>
+        <p class="note-list-empty-content">
+          Take your first note by selecting any text on the webpage and then click the
+          popup icon!
+        </p>
+      </div>
+    );
   },
 });
 </script>

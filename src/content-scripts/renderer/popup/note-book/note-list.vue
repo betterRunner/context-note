@@ -1,48 +1,11 @@
-<template>
-  <div v-if="notes.length" class="note-list-wrapper">
-    <el-input
-      v-model="searchText"
-      placeholder="search your notes.."
-      class="note-list-search"
-      size="mini"
-    >
-      <template #prefix>
-        <i class="el-input__icon el-icon-search"></i>
-      </template>
-    </el-input>
-    <Note
-      v-for="(note, i) in searchedNotes"
-      :ref="
-        (el) => {
-          noteDivs[i] = el;
-        }
-      "
-      :id="note.id"
-      :note="note"
-      :curNoteId="curNoteId"
-      :key="note.id"
-      @delete="handleDeleteNote(note)"
-      @updateNoteNote="handleUpdateNoteNote"
-      @focus="(noteId) => handleSelectNote(noteId, false)"
-      @select="(noteId) => handleSelectNote(noteId, true)"
-    ></Note>
-  </div>
-  <div class="note-list-empty" v-else>
-    <h2 class="note-list-empty-title">Your notebook is empty.</h2>
-    <p class="note-list-empty-content">
-      Take your first note by selecting any text on the webpage and then click the popup
-      icon!
-    </p>
-  </div>
-</template>
-
-<script lang="ts">
+<script lang="tsx">
 import { defineComponent, onBeforeUpdate, inject, ref, computed, nextTick } from "vue";
 import dayjs from "dayjs";
 import { Delta } from "@vueup/vue-quill";
 
 import { Rect } from "@/types/common";
 import { Note as TNote } from "@/types/note";
+import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
 import mitt from "@/utils/mitt";
 import {
@@ -62,17 +25,23 @@ export default defineComponent({
   components: {
     Note,
   },
-  props: {},
-  setup() {
+  props: {
+    expanded: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  setup(props) {
     const storage: Storage = inject("storage", {
       notes: [],
       tags: [],
     });
-    const notes = computed<TNote[]>(() => storage.notes);
+    const notes = computed<TNote[]>(() => storage.notes || []);
+    const tags = computed<Tag[]>(() => storage.tags || []);
 
     /// search note
     const searchText = ref("");
-    const searchedNotes = computed(() => {
+    const searchedNotes = computed((): TNote[] => {
       const notes = storage.notes;
 
       if (!searchText.value) return notes;
@@ -103,11 +72,13 @@ export default defineComponent({
       ];
       // remove the duplicated ids
       ids = Array.from(new Set(ids));
-      return ids.map((id) => notes.find((n) => n.id === id)).filter((n) => !!n);
+      return ids
+        .map((id) => notes.find((n) => n.id === id))
+        .filter((n) => !!n) as TNote[];
     });
 
     /// create note
-    const noteDivs = ref([]);
+    const noteDivs = ref<Element[]>([]);
     // make sure to reset the refs before each update
     onBeforeUpdate(() => {
       noteDivs.value = [];
@@ -135,18 +106,16 @@ export default defineComponent({
       // make sure the note dom is created
       setTimeout(() => {
         // 2. scroll to the note item
-        const divNote = (noteDivs.value[noteDivs.value.length - 1] as {
-          $el: HTMLElement;
-        })?.$el;
+        const divNote = noteDivs.value[noteDivs.value.length - 1]?.$el;
         if (divNote) {
-          divNote.scrollIntoView({ block: 'center' });
+          divNote.scrollIntoView({ block: "center" });
         }
 
         // 3. focus the content editor of this note
         // make sure above `scrollIntoView` is finished
         setTimeout(() => {
           mitt.emit("focus-editor", note.id);
-        })
+        });
       });
 
       // 4. send back the cb event
@@ -185,8 +154,8 @@ export default defineComponent({
     /// delete note
     const handleDeleteNote = async (note: TNote) => {
       const { id } = note;
-      const tags = storage.tags.filter(t => t.noteIds.includes(id));
-      
+      const tags = storage.tags.filter((t) => t.noteIds.includes(id));
+
       // delete id from  `noteIds` of all tags
       for (const tag of tags) {
         storage.tags = await delItemFromArrProperty(
@@ -212,26 +181,84 @@ export default defineComponent({
     const curNoteId = ref("");
     const handleSelectNote = (id: string, scrollIntoView: boolean) => {
       curNoteId.value = id;
-      id && mitt.emit("bold-note", {
-        id,
-        scrollIntoView,
-      });
+      id &&
+        mitt.emit("bold-note", {
+          id,
+          scrollIntoView,
+        });
     };
 
-    return {
-      notes,
-      noteDivs,
-
-      searchText,
-      searchedNotes,
-
-      handleUpdateNoteNote,
-
-      handleDeleteNote,
-
-      curNoteId,
-      handleSelectNote,
+    /// doms
+    const domNoteList = (notes: TNote[]) => {
+      return notes.map((note, i) => (
+        <Note
+          ref={(el: any) => {
+            noteDivs.value[i] = el;
+          }}
+          note={note as TNote}
+          curNoteId={curNoteId.value}
+          onDelete={() => handleDeleteNote(note as TNote)}
+          onUpdateNoteNote={handleUpdateNoteNote}
+          onFocus={(noteId: string) => handleSelectNote(noteId, false)}
+          onSelect={(noteId: string) => handleSelectNote(noteId, true)}
+        ></Note>
+      ));
     };
+
+    const domTagsNoteList = (tags: Tag[]) => {
+      const domTag = (title: string = "", notes: TNote[] = []) => (
+        <div class="note-list-tag">
+          <div class="note-list-tag-title">{title}</div>
+          <div class="note-list-wrap-container">{domNoteList(notes)}</div>
+        </div>
+      );
+      if (tags.length) {
+        const usedNotes: TNote[] = [];
+        const domTags = [];
+        for (const t of tags) {
+          const notes = searchedNotes.value.filter((n) => t.noteIds.includes(n.id));
+          domTags.push(domTag(t.name, notes));
+          usedNotes.push(...notes);
+        }
+        usedNotes.length < searchedNotes.value.length &&
+          domTags.push(
+            domTag(
+              "Others",
+              searchedNotes.value.filter((n) => !usedNotes.includes(n))
+            )
+          );
+        return domTags;
+      } else {
+        return (
+          <div class="note-list-wrap-container">{domNoteList(searchedNotes.value)}</div>
+        );
+      }
+    };
+
+    return () =>
+      notes.value.length ? (
+        <div class="note-list-wrapper">
+          <el-input
+            v-model={searchText.value}
+            placeholder="search your notes.."
+            class="note-list-search"
+            size="mini"
+          ></el-input>
+          {!props.expanded ? (
+            <div class="note-list">{domNoteList(searchedNotes.value)}</div>
+          ) : (
+            <div class="note-list__expanded">{domTagsNoteList(tags.value)}</div>
+          )}
+        </div>
+      ) : (
+        <div class="note-list-empty">
+          <h2 class="note-list-empty-title">Your notebook is empty.</h2>
+          <p class="note-list-empty-content">
+            Take your first note by selecting any text on the webpage and then click the
+            popup icon!
+          </p>
+        </div>
+      );
   },
 });
 </script>
@@ -239,11 +266,44 @@ export default defineComponent({
 <style lang="less" scoped>
 .note-list-wrapper {
   padding: 20px;
+  margin-bottom: 20px;
+
+  .note-list-search {
+    margin-bottom: 10px;
+    background: #fff !important;
+    max-width: 500px;
+  }
+
+  .note-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .note-list__expanded {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .note-list-tag {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+
+    .note-list-tag-title {
+      font-size: 16px;
+      color: #f1f1f1;
+      font-weight: bold;
+    }
+  }
+  .note-list-wrap-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    > * {
+      margin: 10px 20px 10px 0;
+    }
+  }
 }
-.note-list-search {
-  margin-bottom: 10px;
-  background: #fff !important;
-}
+
 .note-list-empty {
   padding: 20px;
   display: flex;

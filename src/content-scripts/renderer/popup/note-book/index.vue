@@ -1,5 +1,5 @@
 <template>
-  <NoteList></NoteList>
+  <NoteList :expanded="expanded"></NoteList>
   <TagBook
     v-show="!!curNoteId"
     :noteId="curNoteId"
@@ -19,7 +19,13 @@ export default {
     NoteList,
     TagBook,
   },
-  setup(props) {
+  props: {
+    expanded: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup() {
     const tagBookCoor = ref<Coor>({ x: 0, y: 0 });
     const curNoteId = ref("");
 

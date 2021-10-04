@@ -248,7 +248,7 @@ export default {
   padding: 16px;
   background: white;
   box-shadow: 1px 2px 2px 0 rgba(0, 0, 0, 0.1);
-  margin-bottom: 38px;
+  margin-bottom: 20px;
   border-radius: 6px 6px 8px 8px;
   position: relative;
   overflow: visible;

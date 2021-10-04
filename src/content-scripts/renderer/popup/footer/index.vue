@@ -6,9 +6,11 @@
           <DArrowLeft class="footer-collapse" v-if="!expanded" @click="() => (expanded = true)" />
           <DArrowRight class="footer-collapse" v-else @click="() => (expanded = false)"
         /></el-icon>
-        <a href="https://github.com/betterRunner/context-note" target="_blank">
-          <img class="footer-icon" :src="githubLogoSrc" height="30" />
-        </a>
+        <el-tooltip placement="top" content="A ⭐ on Github would be much appreciated!">
+            <a href="https://github.com/betterRunner/context-note" target="_blank">
+              <img class="footer-icon" :src="githubLogoSrc" height="30" />
+            </a>
+        </el-tooltip>
       </div>
       <More direction="row" size="4" color="#666" placement="top" :opers="opers" />
     </div>

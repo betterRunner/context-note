@@ -17,6 +17,9 @@ https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b
 <a href="https://www.producthunt.com/posts/context-note?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-context-note" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=313885&theme=light" alt="Context Note - take notes on the web with their context | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
+## Download
+Access it directly from [chrome web store](https://chrome.google.com/webstore/detail/context-note/enmeffcefbiehghanidhebgiccljmncl) or download the zip package in **releases**
+
 ## Features
 
 - 📝 Notebook, reviewing notes on a book, while jumping back to the context for details.

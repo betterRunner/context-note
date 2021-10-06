@@ -211,14 +211,4 @@ export default {
   border: 1px solid #ccc;
   box-shadow: rgb(14 30 62 / 8%) 0px 3px 6px 0px;
 }
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-}
-::-webkit-scrollbar-thumb:window-inactive {
-  background: #aaa;
-}
 </style>

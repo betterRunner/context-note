@@ -76,6 +76,8 @@ export default {
   background: #fff;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+  display: flex;
+  align-items: center;
 
   .footer {
     padding: 10px 20px 10px 10px;

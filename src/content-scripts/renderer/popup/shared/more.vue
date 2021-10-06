@@ -73,6 +73,7 @@ export default {
       height: px,
       border: `${px} solid ${props.color}`,
       "border-radius": px,
+      "box-sizing": "border-box",
       margin: px,
       cursor: 'pointer',
       'user-select': 'none',

@@ -256,6 +256,8 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   width: 460px;
+  max-width: 460px;
+  box-sizing: border-box !important;
   height: 100%;
 
   .note-link {

@@ -11,7 +11,7 @@ will be invisible, so set left to 0. */
   left: 0 !important;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 5px !important;
 }
 ::-webkit-scrollbar-track {
@@ -20,4 +20,4 @@ will be invisible, so set left to 0. */
 }
 ::-webkit-scrollbar-thumb:window-inactive {
   background: #aaa !important;
-}
+} */

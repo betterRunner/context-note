@@ -107,6 +107,10 @@ export default {
   .more-opers-item {
     cursor: pointer;
     user-select: none;
+    padding: 10px;
+    &:hover {
+      background: #ccc;
+    }
   }
 }
 </style>

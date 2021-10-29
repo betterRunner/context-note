@@ -1,6 +1,6 @@
 - [ ] export/import notes' data by json
   - [x] export
-  - [ ] import
+  - [x] import
 - [ ] expand the notes(classify by tag)
 - [ ] more precise rects selection rather than coor (select the real dom by text)
 - [ ] screenshot features

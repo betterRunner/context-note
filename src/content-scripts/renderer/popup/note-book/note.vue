@@ -265,7 +265,7 @@ export default {
     text-align: left;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 400px;
+    width: auto;
     color: #409eff;
   }
   .note-link-content {
@@ -284,7 +284,7 @@ export default {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      width: 300px;
+      width: auto;
       position: relative;
       font-size: 14px;
 
@@ -298,6 +298,8 @@ export default {
       }
     }
     .note-time {
+      width: 100px;
+      min-width: 100px;
       text-align: right;
       user-select: none;
     }

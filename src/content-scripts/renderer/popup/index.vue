@@ -30,11 +30,15 @@ export default defineComponent({
       appExpanded.value = e as boolean;
       appWidth.value = e ? AppWidth.expanded : AppWidth.normal;
     });
-    const wrapperStyle = computed(() => ({
-      width: `${appWidth.value}px`,
-      "min-width": `${appWidth.value}px`,
-      transition: "1.0s",
-    }));
+    const wrapperStyle = computed(() => {
+      const maxWidth = window.innerWidth * 0.8;
+      const width = appWidth.value > maxWidth ? maxWidth : appWidth.value;
+      return {
+        width: `${width}px`,
+        "min-width": `${width}px`,
+        transition: "0.5s",
+      };
+    });
 
     const visible = ref(false);
     const handleClickOutside = () => {

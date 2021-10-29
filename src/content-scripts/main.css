@@ -1,7 +1,7 @@
 body {}
 
-/* Rewrite el-popper z-index, should be higher than extension mask z-index */
-.el-popper {
+/* Rewrite el-popper and el-overlay z-index, should be higher than extension mask z-index */
+.el-popper, .el-overlay {
   z-index: 10001 !important;
 }
 

@@ -1,5 +1,20 @@
-const _set = (key: string, value: any) =>
-  chrome.storage.local.set({ [key]: value });
+// write the storage in order
+let queue: [string, any][] = [];
+const _set = (key: string, value: any) => {
+  return new Promise((resolve) => {
+    queue.push([key, value]);
+    const setter = () => chrome.storage.local.set({ [key]: value }, () => {
+      queue.shift();
+      if (queue.length) {
+        setter();
+      }
+    });
+    if (queue.length === 1) {
+      setter();
+    }
+    resolve(null);
+  })
+}
 
 const _get = (key: string) =>
   new Promise((resolve) => {
@@ -20,7 +35,7 @@ export function get(key: string) {
 export async function addItemToArr(arrKey: string, val: any) {
   const arr = ((await _get(arrKey)) as any[]) ?? [];
   arr.push(val);
-  set(arrKey, arr);
+  await set(arrKey, arr);
   return arr;
 }
 
@@ -35,7 +50,7 @@ export async function delItemFromArr(
   );
   if (index !== -1) {
     arr.splice(index, 1);
-    set(arrKey, arr);
+    await set(arrKey, arr);
   }
   return arr;
 }
@@ -52,7 +67,7 @@ const _operArrItem = async (
     // run the `oper` to get new item
     const newItem = oper(arr[index]);
     arr.splice(index, 1, newItem);
-    set(arrKey, arr);
+    await set(arrKey, arr);
   }
   return arr;
 };

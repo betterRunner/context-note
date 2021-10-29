@@ -23,7 +23,7 @@ import { DArrowLeft, DArrowRight } from "@element-plus/icons";
 import { Oper } from "@/types/common";
 import mitt from "@/utils/mitt";
 import More from "../shared/more.vue";
-import { exportOper } from "./ex-import";
+import { exportOper, importOper } from "./ex-import";
 import { EventType } from "mitt";
 
 export default {
@@ -52,7 +52,7 @@ export default {
     );
 
     const githubLogoSrc = chrome.runtime.getURL("assets/github-logo.png");
-    const opers = ref<Oper[]>([exportOper]);
+    const opers = ref<Oper[]>([exportOper, importOper]);
 
     return {
       footerStyle,

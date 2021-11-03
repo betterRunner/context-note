@@ -199,6 +199,10 @@ export default {
       enableEditor.value = true;
     };
     const handleClickOutsideEditor = () => {
+      if (!enableEditor.value) {
+        return;
+      }
+
       enableEditor.value = false;
       // save the note
       if (!notSelected.value) {

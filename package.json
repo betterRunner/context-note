@@ -1,6 +1,6 @@
 {
     "name": "context-note",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "scripts": {
         "dev": "vite build --mode developmemnt",
         "build": "vite build",

@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/betterRunner/context-note/compare/v1.3.2...v1.3.3) (2021-11-03)
+
+
+### Bug Fixes
+
+* handleClickOutsideEditor trigger bug ([045c6c8](https://github.com/betterRunner/context-note/commit/045c6c8c8f352928a0156f861560d2acd10f9624))
+
+
+
 ## 1.3.2 (2021-10-29)
 
 

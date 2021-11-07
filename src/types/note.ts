@@ -6,6 +6,7 @@ export interface Note {
   createTime: number;
   updateTime: number;
   link: string;
+  linkTitle: string;
   content: string;
   tags: string[];
   rects: Rect[];

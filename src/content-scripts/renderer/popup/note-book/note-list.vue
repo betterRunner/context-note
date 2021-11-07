@@ -97,6 +97,7 @@ export default defineComponent({
         createTime: dayjs().unix(),
         updateTime: dayjs().unix(),
         link: removeUrlPostfix(window.location.href),
+        linkTitle: window.document.title ?? '',
         content: text,
         rects: rects,
         tags: [],

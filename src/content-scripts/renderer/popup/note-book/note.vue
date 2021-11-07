@@ -65,9 +65,9 @@ import { inject, ref, computed, nextTick, PropType } from "vue";
 import randomcolor from "randomcolor";
 import dayjs from "dayjs";
 import { ElMessage } from "element-plus";
-
 import { QuillEditor, Delta } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import { toClipboard } from "@soerenmartius/vue3-clipboard"
 
 import { Note } from "@/types/note";
 import { Tag } from "@/types/tag";
@@ -133,6 +133,17 @@ export default {
         },
         isConfirm: true,
       },
+      {
+        title: "Copy to clipboard",
+        onClick: () => {
+          const { link = '', linkTitle = '', content = '', tags = [] } : Note = props.note;
+          const text = `[${linkTitle || 'unknowned'}](${link})
+        - ${content}
+        ${tags.join(',')}`;
+          toClipboard(text);
+          ElMessage.success("Copied");
+        }
+      }
     ]);
 
     /// note tags

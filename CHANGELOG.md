@@ -1,3 +1,17 @@
+## [1.3.4](https://github.com/betterRunner/context-note/compare/v1.3.2...v1.3.4) (2021-11-07)
+
+
+### Bug Fixes
+
+* handleClickOutsideEditor trigger bug ([045c6c8](https://github.com/betterRunner/context-note/commit/045c6c8c8f352928a0156f861560d2acd10f9624))
+
+
+### Features
+
+* copy note to clipboard ([403f7f7](https://github.com/betterRunner/context-note/commit/403f7f7460f1ce9ad086ae9477cc7f2a0acb7007))
+
+
+
 ## [1.3.3](https://github.com/betterRunner/context-note/compare/v1.3.2...v1.3.3) (2021-11-03)
 
 

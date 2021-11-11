@@ -1,4 +1,4 @@
-- [ ] export/import notes' data by json
+- [x] export/import notes' data by json
   - [x] export
   - [x] import
 - [x] expand the notes(classify by tag)

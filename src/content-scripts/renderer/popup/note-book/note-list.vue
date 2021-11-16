@@ -138,6 +138,8 @@ export default defineComponent({
       const { noteId = "", tag = "", isAddOrDelete = false } = data as any;
       const fn = isAddOrDelete ? addItemToArrProperty : delItemFromArrProperty;
       storage.notes = await fn(StorageKeys.notes, "id", noteId, "tags", tag);
+
+      mitt.emit("update-note-tag-cb");
     });
 
     /// update note of note

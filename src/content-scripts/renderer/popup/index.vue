@@ -1,6 +1,7 @@
 <template>
   <div v-show="visible">
     <div class="popup-wrapper" :style="wrapperStyle">
+      <el-icon class="popup-close" @click="handleClose"><Close /></el-icon>
       <NoteBook :expanded="appExpanded" v-clickoutside="handleClickOutside" />
       <Footer :width="appWidth" />
     </div>
@@ -9,6 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, provide, ref, reactive, computed } from "vue";
+import { Close } from "@element-plus/icons";
 import NoteBook from "./note-book/index.vue";
 import Footer from "./footer/index.vue";
 import { Note } from "@/types/note";
@@ -20,6 +22,7 @@ import { StorageKeys, AppWidth } from "@/utils/constant";
 
 export default defineComponent({
   components: {
+    Close,
     NoteBook,
     Footer,
   },
@@ -44,6 +47,9 @@ export default defineComponent({
     const handleClickOutside = () => {
       visible.value = false;
     };
+    const handleClose = () => {
+       visible.value = false;
+    }
 
     // global reading `notes` and `tags` from storage and provide to sub components.
     const storage = reactive<Storage>({
@@ -72,6 +78,7 @@ export default defineComponent({
       wrapperStyle,
       visible,
       handleClickOutside,
+      handleClose,
     };
   },
 });
@@ -90,5 +97,12 @@ export default defineComponent({
   opacity: 1;
   border-radius: 10px;
   z-index: 9999;
+
+  .popup-close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+  }
 }
 </style>

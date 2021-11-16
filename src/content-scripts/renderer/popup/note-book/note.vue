@@ -353,7 +353,7 @@ export default {
 }
 .note-more-opers {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 10px;
   cursor: pointer;
   padding: 5px;

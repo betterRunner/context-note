@@ -22,7 +22,7 @@ import randomColor from "randomcolor";
 import { Coor } from "@/types/common";
 import { Tag } from "@/types/tag";
 import { Storage } from "@/types/storage";
-import mitt from "@/utils/mitt";
+import mitt, { sendEmitAndWait } from "@/utils/mitt";
 import {
   addItemToArr,
   addItemToArrProperty,
@@ -91,6 +91,7 @@ export default {
     );
     const handleClickOutside = () => {
       ctx.emit("close");
+      mitt.emit('tag-search-clear');
     };
 
     const storage: Storage = inject("storage", {
@@ -149,7 +150,7 @@ export default {
       } else {
         tag.isSelect = !tag.isSelect;
         if (tag.isSelect) {
-          mitt.emit("update-note-tag", {
+          await sendEmitAndWait("update-note-tag", {
             noteId: props.noteId,
             tag: tag.name,
             isAddOrDelete: true,
@@ -162,7 +163,7 @@ export default {
             props.noteId
           );
         } else {
-          mitt.emit("update-note-tag", {
+          await sendEmitAndWait("update-note-tag", {
             noteId: props.noteId,
             tag: tag.name,
             isAddOrDelete: false,

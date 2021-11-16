@@ -5,9 +5,11 @@ import {
   PREFIX_RECT,
   PREFIX_RECT_GROUP,
 } from "@/utils/constant";
+import { EnumValueVisiteeWithNull } from "ts-enum-util";
 
 function setHighlightStyle(ele: HTMLElement, rect: Rect) {
   const PADDING = 6;
+  ele.style.pointerEvents = "none"; // not occupy the click event of the node in this position
   ele.style.position = "absolute";
   ele.style.left = rect.x - PADDING / 2 + "px";
   ele.style.top = rect.y - PADDING / 2 + "px";
@@ -43,7 +45,7 @@ function setRectStyleWithIds(ids: string[], key: string, value: string) {
 }
 
 const groupRectIdsMap: { [key: string]: string[] } = {};
-/** 
+/**
  * Generate the highlight rect doms and register their click event.
  */
 export function genHighlightRects(
@@ -65,8 +67,11 @@ export function genHighlightRects(
 
     // click event
     document.addEventListener("mouseup", (event) => {
-      const withinBoundaries = event.composedPath().includes(ele);
-
+      const withinBoundaries =
+        event.pageX >= ele.offsetLeft &&
+        event.pageX <= ele.offsetWidth + ele.offsetLeft &&
+        event.pageY >= ele.offsetTop &&
+        event.pageY <= ele.offsetHeight + ele.offsetTop;
       if (withinBoundaries) {
         const groupId = boldHighlightGroupRects(ele?.id, "");
         clickCb?.(groupId);
@@ -78,15 +83,17 @@ export function genHighlightRects(
   return groupId;
 }
 
-/** 
+/**
  * Delete all rects with `noteId`, if `noteId` is not provided, delete all rects.
  */
 export function delHighlightRects(noteId?: string | undefined) {
-  const query = !noteId ? `[${DOMATTR_RECT_GROUP}]` : `[${DOMATTR_RECT_GROUP}=${noteId}]`
+  const query = !noteId
+    ? `[${DOMATTR_RECT_GROUP}]`
+    : `[${DOMATTR_RECT_GROUP}=${noteId}]`;
   const rectDoms = document.querySelectorAll(query);
-  rectDoms.forEach(dom => {
+  rectDoms.forEach((dom) => {
     dom.parentElement?.removeChild(dom);
-  })
+  });
 }
 
 /**

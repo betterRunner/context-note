@@ -1,3 +1,23 @@
+## [1.3.5](https://github.com/betterRunner/context-note/compare/v1.3.2...v1.3.5) (2021-11-16)
+
+
+### Bug Fixes
+
+* clear search text when tag-searcher close ([56b0f2b](https://github.com/betterRunner/context-note/commit/56b0f2b2e78984a6691f5c8003b8779cd2b539be))
+* close button ([a2f46fd](https://github.com/betterRunner/context-note/commit/a2f46fd45ab62df661c3ee1335a4855e4e23caed))
+* handleClickOutsideEditor trigger bug ([045c6c8](https://github.com/betterRunner/context-note/commit/045c6c8c8f352928a0156f861560d2acd10f9624))
+* hightlight rects not occupying click event ([f0d4e07](https://github.com/betterRunner/context-note/commit/f0d4e07b3b7af6346cb4c59728b78b757a41a730))
+* more button top ([4032321](https://github.com/betterRunner/context-note/commit/40323213559fca34ea12d4fac55f8fc72f2a8c8c))
+* tag & more css ([b88539f](https://github.com/betterRunner/context-note/commit/b88539fc2a1790ab1c59c3b946a1c8ec0c64b732))
+* wait to run storage oper until prev one finished ([64e3806](https://github.com/betterRunner/context-note/commit/64e38062388e533048507ac34bbeb0ba50e9c5f5))
+
+
+### Features
+
+* copy note to clipboard ([403f7f7](https://github.com/betterRunner/context-note/commit/403f7f7460f1ce9ad086ae9477cc7f2a0acb7007))
+
+
+
 ## [1.3.4](https://github.com/betterRunner/context-note/compare/v1.3.2...v1.3.4) (2021-11-07)
 
 

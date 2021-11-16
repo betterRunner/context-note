@@ -91,6 +91,7 @@ export default {
     );
     const handleClickOutside = () => {
       ctx.emit("close");
+      mitt.emit('tag-search-clear');
     };
 
     const storage: Storage = inject("storage", {

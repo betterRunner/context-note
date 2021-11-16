@@ -36,6 +36,9 @@ export default {
       }
     );
     const taginput = ref(null);
+    mitt.on('tag-search-clear', () => {
+      searchText.value = "";
+    })
     mitt.on('tag-search-focus', () => {
       (taginput.value as unknown as HTMLElement)?.focus();
     })

@@ -12,7 +12,7 @@
         @click="handleSelectTagItem(tag)"
       >
         <div class="tag-item-content">
-          <el-icon v-if="tag.isSelect" :size="12"><Check /></el-icon>
+          <el-icon class="tag-item-icon" v-if="tag.isSelect" :size="12"><Check /></el-icon>
           {{ tag.name }}
         </div>
       </el-tag>
@@ -77,6 +77,10 @@ export default {
     .tag-item-content {
       display: flex;
       align-items: center;
+      .tag-item-icon {
+        top: 0 !important;
+        right: 0 !important;
+      }
     }
   }
 }

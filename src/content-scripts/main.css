@@ -12,13 +12,13 @@ will be invisible, so set left to 0. */
   left: 0 !important;
 }
 
-/* ::-webkit-scrollbar {
+.popup-wrapper::-webkit-scrollbar {
   width: 5px !important;
 }
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3) !important;
+.popup-wrapper::-webkit-scrollbar-track {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.3) !important;
   border-radius: 5px !important;
 }
-::-webkit-scrollbar-thumb:window-inactive {
+.popup-wrapper::-webkit-scrollbar-thumb:window-inactive {
   background: #aaa !important;
-} */
+}

@@ -260,7 +260,7 @@ export default {
 
 <style lang="less" scoped>
 .note-wrapper {
-  padding: 16px;
+  padding: 10px 16px;
   background: white;
   box-shadow: 1px 2px 2px 0 rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -353,7 +353,7 @@ export default {
 }
 .note-more-opers {
   position: absolute;
-  top: 5px;
+  top: 0px;
   right: 10px;
   cursor: pointer;
   padding: 5px;

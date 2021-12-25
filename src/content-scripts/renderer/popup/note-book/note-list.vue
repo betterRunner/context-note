@@ -42,39 +42,45 @@ export default defineComponent({
     /// search note
     const searchText = ref("");
     const searchedNotes = computed((): TNote[] => {
-      const notes = storage.notes;
+      let notes = storage.notes;
 
-      if (!searchText.value) return notes;
-
-      const plainNotes = notes.map((n) => ({
-        id: n.id,
-        plainText: (n.note as Delta)?.ops
-          ?.map((o: { insert: any }) => o?.insert || "")
-          .join(""),
-      }));
-      const filteredPlainNoteIds = filterArrBySearchText(
-        plainNotes,
-        "plainText",
-        searchText.value
-      ).map((n) => n.id);
-      // fitler by `searchText` in the following order
-      let ids = [
-        // 1. filter by content
-        ...filterArrBySearchText(notes, "content", searchText.value).map((n) => n.id),
-        // 2. filter by plain note
-        ...filteredPlainNoteIds,
-        // 3. filter by tags
-        ...notes
-          .filter((n) => !!filterArrBySearchText(n.tags, "", searchText.value).length)
-          .map((n) => n.id),
-        // 4. filter by link
-        ...notes.filter((n) => n.link.includes(searchText.value)).map((n) => n.id),
+      if (searchText.value) {
+        const plainNotes = notes.map((n) => ({
+          id: n.id,
+          plainText: (n.note as Delta)?.ops
+            ?.map((o: { insert: any }) => o?.insert || "")
+            .join(""),
+        }));
+        const filteredPlainNoteIds = filterArrBySearchText(
+          plainNotes,
+          "plainText",
+          searchText.value
+        ).map((n) => n.id);
+        // fitler by `searchText` in the following order
+        let ids = [
+          // 1. filter by content
+          ...filterArrBySearchText(notes, "content", searchText.value).map((n) => n.id),
+          // 2. filter by plain note
+          ...filteredPlainNoteIds,
+          // 3. filter by tags
+          ...notes
+            .filter((n) => !!filterArrBySearchText(n.tags, "", searchText.value).length)
+            .map((n) => n.id),
+          // 4. filter by link
+          ...notes.filter((n) => n.link.includes(searchText.value)).map((n) => n.id),
+        ];
+        // remove the duplicated ids
+        ids = Array.from(new Set(ids));
+        notes = ids
+          .map((id) => notes.find((n) => n.id === id))
+          .filter((n) => !!n) as TNote[];
+      }
+      // put the ones with the current location href to the head.
+      const href = removeUrlPostfix(window.location.href);
+      return [
+        ...notes.filter(n => n.link === href),
+        ...notes.filter(n => n.link !== href)
       ];
-      // remove the duplicated ids
-      ids = Array.from(new Set(ids));
-      return ids
-        .map((id) => notes.find((n) => n.id === id))
-        .filter((n) => !!n) as TNote[];
     });
 
     /// create note

@@ -103,6 +103,7 @@ export default defineComponent({
     right: 5px;
     top: 5px;
     cursor: pointer;
+    color: white;
   }
 }
 </style>

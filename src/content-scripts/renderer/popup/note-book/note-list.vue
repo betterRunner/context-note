@@ -273,7 +273,7 @@ export default defineComponent({
 
   .note-list-search {
     margin-bottom: 10px;
-    background: #fff !important;
+    background: unset !important;
     max-width: 500px;
   }
 

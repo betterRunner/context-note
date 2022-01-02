@@ -98,11 +98,13 @@ export default defineComponent({
       };
 
       // 1. create the note item
+      const href = window.location.href;
       const note: TNote = {
         id: noteId,
         createTime: dayjs().unix(),
         updateTime: dayjs().unix(),
-        link: removeUrlPostfix(window.location.href),
+        link: removeUrlPostfix(href),
+        rawLink: href,
         linkTitle: window.document.title ?? '',
         content: text,
         rects: rects,

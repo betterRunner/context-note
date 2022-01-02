@@ -75,7 +75,7 @@ import { Storage } from "@/types/storage";
 import { Coor, Oper } from "@/types/common";
 import { Query } from "@/types/dom";
 import mitt from "@/utils/mitt";
-import { wrapUrlWithQuery } from "@/utils/utils";
+import { appendUrlQuery } from "@/utils/utils";
 import TagBook from "../tag-book/index.vue";
 import More from "../shared/more.vue";
 
@@ -112,15 +112,12 @@ export default {
     );
 
     /// note link
-    const noteLink = ref(props.note.link || "");
-    const handleCopy = () => {
-      ElMessage.success("Copied");
-    };
     const handleOpenLink = (note: Note) => {
       const query: Query = {
         noteId: note.id,
       };
-      const url = wrapUrlWithQuery(note.link, query);
+      console.log(note.rawLink);
+      const url = appendUrlQuery(note.rawLink, query);
       window.open(url);
     };
 
@@ -136,8 +133,8 @@ export default {
       {
         title: "Copy to clipboard",
         onClick: () => {
-          const { link = '', linkTitle = '', content = '', tags = [] } : Note = props.note;
-          const text = `[${linkTitle || 'unknowned'}](${link})
+          const { rawLink = '', linkTitle = '', content = '', tags = [] } : Note = props.note;
+          const text = `[${linkTitle || 'unknowned'}](${rawLink})
         - ${content}
         ${tags.join(',')}`;
           toClipboard(text);
@@ -236,8 +233,6 @@ export default {
       colorBarStyle,
       notSelected,
 
-      noteLink,
-      handleCopy,
       handleOpenLink,
 
       moreOpers,

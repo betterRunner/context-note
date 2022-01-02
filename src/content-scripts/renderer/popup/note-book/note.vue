@@ -2,8 +2,9 @@
   <div
     class="note-wrapper"
     :class="{ 'note-wrapper__notselected': notSelected }"
-    :style="colorBarStyle"
+    :style="wrapperStyle"
     @click="handleClickNote"
+    v-clickoutside="handleClickOutsideNote"
   >
     <!-- website link -->
     <div :id="`link-${note.id}`" class="note-link">
@@ -94,12 +95,17 @@ export default {
       required: true,
       type: Object as PropType<Note>,
     },
+    expanded: {
+      default: false,
+    },
   },
   setup(props, ctx) {
-    const colorBarStyle = ref({
+    const wrapperStyle = ref({
       borderTop: `8px solid ${randomcolor({
         alpha: 0.5,
       })}`,
+      width: `${props.expanded ? 420 : 460}px`,
+      maxWidth: `${props.expanded ? 420 : 460}px`,
     });
     const storage: Storage = inject("storage", {
       notes: [],
@@ -203,6 +209,10 @@ export default {
       // make sure the select event is trigger after `handleClickOutsideEditor`
       nextTick(() => ctx.emit("select", props.note.id));
     };
+    const handleClickOutsideNote = () => {
+      // make sure the select event is trigger after `handleClickOutsideEditor`
+      nextTick(() => ctx.emit("select", ""));
+    }
     const handleClickEditor = () => {
       enableEditor.value = true;
     };
@@ -230,7 +240,7 @@ export default {
 
     return {
       dayjs,
-      colorBarStyle,
+      wrapperStyle,
       notSelected,
 
       handleOpenLink,
@@ -246,6 +256,7 @@ export default {
       editorContent,
       editorDom,
       handleClickNote,
+      handleClickOutsideNote,
       handleClickEditor,
       handleClickOutsideEditor,
     };
@@ -265,8 +276,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 460px;
-  max-width: 460px;
   box-sizing: border-box !important;
   height: 100%;
 

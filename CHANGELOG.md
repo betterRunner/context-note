@@ -1,3 +1,34 @@
+## [1.3.7](https://github.com/betterRunner/context-note/compare/v1.2.2...v1.3.7) (2022-01-02)
+
+
+### Bug Fixes
+
+*  put the notes with the current location href to the head. ([81360db](https://github.com/betterRunner/context-note/commit/81360db9c0fcf46e5c98dcec9daf89372775b2fe))
+* clear search text when tag-searcher close ([56b0f2b](https://github.com/betterRunner/context-note/commit/56b0f2b2e78984a6691f5c8003b8779cd2b539be))
+* close button ([a2f46fd](https://github.com/betterRunner/context-note/commit/a2f46fd45ab62df661c3ee1335a4855e4e23caed))
+* close icon ([e9803dc](https://github.com/betterRunner/context-note/commit/e9803dcb2ca44f1a4f813695efaea018daebbdec))
+* css on windows ([4e6f22c](https://github.com/betterRunner/context-note/commit/4e6f22ca5cfd43f25500bf63c78d064e3bbe778e))
+* el-overlay z-index ([7e7b62d](https://github.com/betterRunner/context-note/commit/7e7b62df0dec2d7f0e821426252e92e8a419bba1))
+* handleClickOutsideEditor trigger bug ([045c6c8](https://github.com/betterRunner/context-note/commit/045c6c8c8f352928a0156f861560d2acd10f9624))
+* hightlight rects not occupying click event ([f0d4e07](https://github.com/betterRunner/context-note/commit/f0d4e07b3b7af6346cb4c59728b78b757a41a730))
+* keep query of url of note ([12dbe48](https://github.com/betterRunner/context-note/commit/12dbe48095fcf4ebf93a5b5a3b86e839239cfa12))
+* more button top ([4032321](https://github.com/betterRunner/context-note/commit/40323213559fca34ea12d4fac55f8fc72f2a8c8c))
+* note width in expaned mode & clickoutside ([5ae6c6b](https://github.com/betterRunner/context-note/commit/5ae6c6bcbfe63fa945c25ce19f1d9df36a316e8c))
+* padding & scrollbar ([ecedbb7](https://github.com/betterRunner/context-note/commit/ecedbb76d29d0b098bf7bd5995e5b3c41ed7621e))
+* popup is hided in small screen ([0950940](https://github.com/betterRunner/context-note/commit/0950940d7d1d668a22d1289989e03c976ff57710))
+* scrollbar of page disappers ([3f5dc31](https://github.com/betterRunner/context-note/commit/3f5dc319dc0149dbf18863ec2d66ca92ad124752))
+* storage write not working ([bf5827b](https://github.com/betterRunner/context-note/commit/bf5827b56b1f5cc02ac53d37554d85b44d9500ed))
+* tag & more css ([b88539f](https://github.com/betterRunner/context-note/commit/b88539fc2a1790ab1c59c3b946a1c8ec0c64b732))
+* wait to run storage oper until prev one finished ([64e3806](https://github.com/betterRunner/context-note/commit/64e38062388e533048507ac34bbeb0ba50e9c5f5))
+
+
+### Features
+
+* copy note to clipboard ([403f7f7](https://github.com/betterRunner/context-note/commit/403f7f7460f1ce9ad086ae9477cc7f2a0acb7007))
+* import notes ([74857b1](https://github.com/betterRunner/context-note/commit/74857b12d45ba41cd0bb1a6db4823134a419f884))
+
+
+
 ## [1.3.6](https://github.com/betterRunner/context-note/compare/v1.2.2...v1.3.6) (2021-12-25)
 
 

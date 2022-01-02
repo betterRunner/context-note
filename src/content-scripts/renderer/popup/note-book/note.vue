@@ -2,8 +2,9 @@
   <div
     class="note-wrapper"
     :class="{ 'note-wrapper__notselected': notSelected }"
-    :style="colorBarStyle"
+    :style="wrapperStyle"
     @click="handleClickNote"
+    v-clickoutside="handleClickOutsideNote"
   >
     <!-- website link -->
     <div :id="`link-${note.id}`" class="note-link">
@@ -75,7 +76,7 @@ import { Storage } from "@/types/storage";
 import { Coor, Oper } from "@/types/common";
 import { Query } from "@/types/dom";
 import mitt from "@/utils/mitt";
-import { wrapUrlWithQuery } from "@/utils/utils";
+import { appendUrlQuery } from "@/utils/utils";
 import TagBook from "../tag-book/index.vue";
 import More from "../shared/more.vue";
 
@@ -94,12 +95,17 @@ export default {
       required: true,
       type: Object as PropType<Note>,
     },
+    expanded: {
+      default: false,
+    },
   },
   setup(props, ctx) {
-    const colorBarStyle = ref({
+    const wrapperStyle = ref({
       borderTop: `8px solid ${randomcolor({
         alpha: 0.5,
       })}`,
+      width: `${props.expanded ? 420 : 460}px`,
+      maxWidth: `${props.expanded ? 420 : 460}px`,
     });
     const storage: Storage = inject("storage", {
       notes: [],
@@ -112,15 +118,12 @@ export default {
     );
 
     /// note link
-    const noteLink = ref(props.note.link || "");
-    const handleCopy = () => {
-      ElMessage.success("Copied");
-    };
     const handleOpenLink = (note: Note) => {
       const query: Query = {
         noteId: note.id,
       };
-      const url = wrapUrlWithQuery(note.link, query);
+      console.log(note.rawLink);
+      const url = appendUrlQuery(note.rawLink, query);
       window.open(url);
     };
 
@@ -136,8 +139,8 @@ export default {
       {
         title: "Copy to clipboard",
         onClick: () => {
-          const { link = '', linkTitle = '', content = '', tags = [] } : Note = props.note;
-          const text = `[${linkTitle || 'unknowned'}](${link})
+          const { rawLink = '', linkTitle = '', content = '', tags = [] } : Note = props.note;
+          const text = `[${linkTitle || 'unknowned'}](${rawLink})
         - ${content}
         ${tags.join(',')}`;
           toClipboard(text);
@@ -206,6 +209,10 @@ export default {
       // make sure the select event is trigger after `handleClickOutsideEditor`
       nextTick(() => ctx.emit("select", props.note.id));
     };
+    const handleClickOutsideNote = () => {
+      // make sure the select event is trigger after `handleClickOutsideEditor`
+      nextTick(() => ctx.emit("select", ""));
+    }
     const handleClickEditor = () => {
       enableEditor.value = true;
     };
@@ -233,11 +240,9 @@ export default {
 
     return {
       dayjs,
-      colorBarStyle,
+      wrapperStyle,
       notSelected,
 
-      noteLink,
-      handleCopy,
       handleOpenLink,
 
       moreOpers,
@@ -251,6 +256,7 @@ export default {
       editorContent,
       editorDom,
       handleClickNote,
+      handleClickOutsideNote,
       handleClickEditor,
       handleClickOutsideEditor,
     };
@@ -270,8 +276,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 460px;
-  max-width: 460px;
   box-sizing: border-box !important;
   height: 100%;
 

@@ -98,11 +98,13 @@ export default defineComponent({
       };
 
       // 1. create the note item
+      const href = window.location.href;
       const note: TNote = {
         id: noteId,
         createTime: dayjs().unix(),
         updateTime: dayjs().unix(),
-        link: removeUrlPostfix(window.location.href),
+        link: removeUrlPostfix(href),
+        rawLink: href,
         linkTitle: window.document.title ?? '',
         content: text,
         rects: rects,
@@ -198,13 +200,14 @@ export default defineComponent({
     };
 
     /// doms
-    const domNoteList = (notes: TNote[]) => {
+    const domNoteList = (notes: TNote[], expanded?: boolean) => {
       return notes.map((note, i) => (
         <Note
           ref={(el: any) => {
             noteDivs.value[i] = el;
           }}
           note={note as TNote}
+          expanded={expanded}
           curNoteId={curNoteId.value}
           onDelete={() => handleDeleteNote(note as TNote)}
           onUpdateNoteNote={handleUpdateNoteNote}
@@ -218,7 +221,7 @@ export default defineComponent({
       const domTag = (title: string = "", notes: TNote[] = []) => (
         <div class="note-list-tag">
           <div class="note-list-tag-title">{title}</div>
-          <div class="note-list-wrap-container">{domNoteList(notes)}</div>
+          <div class="note-list-wrap-container">{domNoteList(notes, true)}</div>
         </div>
       );
       if (tags.length) {
@@ -239,7 +242,7 @@ export default defineComponent({
         return domTags;
       } else {
         return (
-          <div class="note-list-wrap-container">{domNoteList(searchedNotes.value)}</div>
+          <div class="note-list-wrap-container">{domNoteList(searchedNotes.value, true)}</div>
         );
       }
     };

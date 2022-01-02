@@ -34,7 +34,7 @@ export default defineComponent({
       appWidth.value = e ? AppWidth.expanded : AppWidth.normal;
     });
     const wrapperStyle = computed(() => {
-      const maxWidth = window.innerWidth * 0.8;
+      const maxWidth = window.innerWidth * 0.9;
       const width = appWidth.value > maxWidth ? maxWidth : appWidth.value;
       return {
         width: `${width}px`,

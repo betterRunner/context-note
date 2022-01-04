@@ -9,7 +9,7 @@
 
 <p align="center">A 📝<b>note-taking chrome extension</b>: taking notes on the web with their context.
 </p>
-<p align="center">Built by <a href="https://v3.vuejs.org/" target="_blank">Vue3</a> & <a href="https://vitejs.dev/" target="_blank">Vite2</a>.</p>
+<p align="center">Built by <a href="https://v3.vuejs.org/" target="_blank">Vue3</a>.</p>
 
 https://user-images.githubusercontent.com/7123136/133190952-5b056890-ccf0-453a-b89d-2956efa987a9.mp4
 

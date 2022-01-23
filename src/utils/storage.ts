@@ -3,7 +3,7 @@ let queue: [string, any][] = [];
 const _set = (key: string, value: any) => {
   return new Promise((resolve) => {
     queue.push([key, value]);
-    const setter = () => chrome.storage.local.set({ [key]: value }, () => {
+    const setter = () => chrome.storage.sync.set({ [key]: value }, () => {
       queue.shift();
       if (queue.length) {
         setter();
@@ -18,7 +18,7 @@ const _set = (key: string, value: any) => {
 
 const _get = (key: string) =>
   new Promise((resolve) => {
-    chrome.storage.local.get([key], function(val: any) {
+    chrome.storage.sync.get([key], function(val: any) {
       const res = val?.[key];
       resolve(res);
     });

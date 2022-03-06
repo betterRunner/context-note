@@ -19,7 +19,7 @@ const _set = (key: string, value: any) => {
 
 const _get = (key: string) =>
   new Promise((resolve) => {
-    chrome.storage.local.get([key], function(val: any) {
+    chrome.storage.sync.get([key], function(val: any) {
       const res = val?.[key];
       resolve(res);
     });

@@ -277,20 +277,16 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .note-list-wrapper {
-  padding: 20px;
+  padding: 30px 20px;
   margin-bottom: 20px;
 
   .note-list-search {
     margin-bottom: 10px;
     background: unset !important;
-    max-width: 500px;
+    max-width: 450px;
   }
 
-  .note-list {
-    display: flex;
-    flex-direction: column;
-  }
-  .note-list__expanded {
+  .note-list, .note-list__expanded {
     display: flex;
     flex-direction: column;
   }
@@ -317,7 +313,7 @@ export default defineComponent({
 }
 
 .note-list-empty {
-  padding: 20px;
+  padding: 30px 20px;
   display: flex;
   justify-content: center;
   flex-direction: column;

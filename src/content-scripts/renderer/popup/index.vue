@@ -1,7 +1,7 @@
 <template>
   <div v-show="visible">
     <div class="popup-wrapper" :style="wrapperStyle">
-      <el-icon class="popup-close" @click="handleClose"><Close /></el-icon>
+      <el-icon :size="18" class="popup-close" @click="handleClose"><Close /></el-icon>
       <NoteBook :expanded="appExpanded" v-clickoutside="handleClickOutside" />
       <Footer :width="appWidth" />
     </div>
@@ -99,9 +99,9 @@ export default defineComponent({
   z-index: 9999;
 
   .popup-close {
-    position: absolute;
-    right: 5px;
-    top: 5px;
+    position: fixed;
+    right: 10px;
+    top: 14px;
     cursor: pointer;
     color: white;
   }

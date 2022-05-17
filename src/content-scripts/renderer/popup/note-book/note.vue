@@ -104,8 +104,8 @@ export default {
       borderTop: `8px solid ${randomcolor({
         alpha: 0.5,
       })}`,
-      width: `${props.expanded ? 420 : 460}px`,
-      maxWidth: `${props.expanded ? 420 : 460}px`,
+      width: `${props.expanded ? 420 : 450}px`,
+      maxWidth: `${props.expanded ? 420 : 450}px`,
     });
     const storage: Storage = inject("storage", {
       notes: [],

@@ -7,7 +7,7 @@
           <DArrowRight class="footer-collapse" v-else @click="() => (expanded = false)"
         /></el-icon>
         <el-tooltip placement="top" content="A ⭐ on Github would be much appreciated!">
-            <a href="https://github.com/betterRunner/context-note" target="_blank">
+            <a class="footer-link" href="https://github.com/betterRunner/context-note" target="_blank">
               <img class="footer-icon" :src="githubLogoSrc" height="30" />
             </a>
         </el-tooltip>
@@ -97,6 +97,10 @@ export default {
       .footer-collapse {
         cursor: pointer;
       }
+    }
+
+    .footer-link {
+      user-select: none;
     }
 
     .footer-icon {

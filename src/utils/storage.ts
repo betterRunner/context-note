@@ -3,6 +3,7 @@ let queue: [string, any][] = [];
 const _set = (key: string, value: any) => {
   return new Promise((resolve) => {
     queue.push([key, value]);
+    // TODO: use `chrome.storage.local` instead of `chrome.storage.sync` since the synchronization has an issue.
     const setter = () => chrome.storage.local.set({ [key]: value }, () => {
       queue.shift();
       if (queue.length) {
